@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 
-//Project Name Pala
-
 public class main {
 
 	public static void main(String[] args) {
