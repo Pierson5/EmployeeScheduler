@@ -1,9 +1,7 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.stream.Collectors;
 
 public class FloorPlan {
 
@@ -14,8 +12,6 @@ public class FloorPlan {
 	private int numOfEmployees;
 	private String name;
 	private ArrayList<Section> sections;
-	private ArrayList<Section> east;
-	private ArrayList<Section> west;
 	private HashMap<String, Integer> eastMap = new HashMap<String, Integer>();
 	private HashMap<String, Integer> westMap = new HashMap<String, Integer>();
 
@@ -74,7 +70,6 @@ public class FloorPlan {
 	}
 
 
-	//TODO Algorithm ========= REDO, Start with employee available sections, not employee rotation ===================
 	// 1. Check relationship status, if both employees are working, assign to separate: East/West Side
 	// 2. Check start time, sort employees into two groups, 6pm / 7pm. (early/late)
 	// 3. Alternate between 6pm and 7pm, sending to east or west side
@@ -82,8 +77,6 @@ public class FloorPlan {
 	public void assignSections(ArrayList<Employee> team) {
 
 		String shiftTimeKey = "";
-		Section[] rotationValues;
-		Section[] rotationValues2;
 
 		//Shuffle employees, to select random employee
 		//get shift start time, check hashmap, schedule to side with lower # of employees with same shift time
@@ -113,7 +106,6 @@ public class FloorPlan {
 			//check if employee is already assigned a section
 			if(!empToAssign.isAssignedSection()) {
 				shiftTimeKey = empToAssign.getStartTime();
-				rotationValues = empToAssign.getRotationValues();
 				//check east and west map to determine which side of casino to assign employee
 				//check if key is in hashmap, if not, initialize value to 0
 				eastMap.putIfAbsent(shiftTimeKey, 0);
@@ -137,14 +129,18 @@ public class FloorPlan {
 							//if there are no other employees with the same start time, schedule highest priority
 							for(Employee empToCompare : team) {
 								//employees must have same start time to balance east and west side
-								if(empToCompare.getStartTime().equals(shiftTimeKey) && !empToCompare.isAssignedSection()) {
+								if(empToCompare.getStartTime().equals(shiftTimeKey) && 
+								  !empToCompare.isAssignedSection() && 
+								  !empToCompare.equals(empToAssign)) {
 									Employee employee;
 									//get employee with highest priority and assign that employee the section
 									employee = empWithHighestPriority(empToAssign, empToCompare, section);
+
+									System.out.println("Comparing1: " + empToAssign.getFirstName() + " with: " + empToCompare.getFirstName());
+									System.out.println("Winner1: " + employee.getFirstName() + " is scheduled section: " + section.getName());
+									
 									employee.setSection(section);
 									updateFloorPlanTime(employee);
-									System.out.println("Section assigned (should be true):: " + section.isAssigned());
-									System.out.println("Employee assigned (should be true):: " + employee.isAssignedSection());
 									isAssigned = true;
 									break;
 								}
@@ -153,8 +149,8 @@ public class FloorPlan {
 								empToAssign.setSection(section);
 								updateFloorPlanTime(empToAssign);
 							}
+							break;
 						}
-
 					}
 				}
 				
@@ -176,14 +172,17 @@ public class FloorPlan {
 							//if there are no other employees with the same start time, schedule highest priority
 							for(Employee empToCompare : team) {
 								//employees must have same start time to balance east and west side
-								if(empToCompare.getStartTime().equals(shiftTimeKey) && !empToCompare.isAssignedSection()) {
+								if(empToCompare.getStartTime().equals(shiftTimeKey) && 
+								  !empToCompare.isAssignedSection() && 
+								  !empToCompare.equals(empToAssign)) {
 									Employee employee;
 									//get employee with highest priority and assign that employee the section
 									employee = empWithHighestPriority(empToAssign, empToCompare, section);
+									System.out.println("Comparing2: " + empToAssign.getFirstName() + " with: " + empToCompare.getFirstName());
+									System.out.println("Winner2: " + employee.getFirstName() + " is scheduled section: " + section.getName());
+									
 									employee.setSection(section);
 									updateFloorPlanTime(employee);
-									System.out.println("Section assigned (should be true):: " + section.isAssigned());
-									System.out.println("Employee assigned (should be true):: " + employee.isAssignedSection());
 									isAssigned = true;
 									break;
 								}
@@ -192,8 +191,8 @@ public class FloorPlan {
 								empToAssign.setSection(section);
 								updateFloorPlanTime(empToAssign);
 							}
+							break;
 						}
-
 					}
 				}
 				
@@ -203,9 +202,8 @@ public class FloorPlan {
 				else { 
 					System.out.println("Both sides equal");
 					for(Section section : sections) {
-						System.out.println("Assigning SECTION " + section.getName());
-
 						if(!section.isAssigned()) {
+							System.out.println("Assigning SECTION " + section.getName());
 							empToAssign.setSection(section);
 							updateFloorPlanTime(empToAssign);
 							break;
@@ -260,7 +258,6 @@ public class FloorPlan {
 	}
 
 
-	//TODO change from rotation values to actual sections for scheduling
 	//Takes 2 employees and schedules them to opposite sides of the casino
 	//compares priorities of both employees, highest combination of east/west side
 	//and schedules accordingly
@@ -280,12 +277,16 @@ public class FloorPlan {
 		Section empTwoSecondPriority = null;
 
 		//if top priorities are on different sides, schedule those sections
-		//TODO top priority might not be a scheduled section! if 1 != 1.2
-		//2 employee casion example, 1.2.3.9.HL   &    4.5.6.7.8
 		if(empOneTopPriority.isEast() && !empTwoTopPriority.isEast()) {
-
-			employee.setSection(empOneTopPriority);
-			relationshipEmployee.setSection(empTwoTopPriority);
+			//match top priorities with available section
+			for(Section section : sections) {
+				if(section.getName().contains(empOneTopPriority.getName())) {
+					employee.setSection(section);
+				}
+				if(section.getName().contains(empTwoTopPriority.getName())) {
+					relationshipEmployee.setSection(section);
+				}
+			}
 		}
 
 		//if both top priorities are on the same casino side, iterate through rotations values
@@ -314,22 +315,34 @@ public class FloorPlan {
 				//sections are different, keep track of position so highest priorities of both
 				//employees are assigned
 				else {
-					empTwoSecondPriority = employeeRotation2[i];
+					empOneSecondPriority = employeeRotation1[i];
 					break;
 				}
 			}
 
 			//compare how many iterations were used to find sections on different sides
-			//in both cases. The lowest iterations = highest priority of both employees, assign sections
+			//The lowest iterations = highest priority of both employees, assign sections
 			if(iterations1 <= iterations2) {
 				//iterations1 is top priority, assign sections
-				employee.setSection(empOneTopPriority);
-				relationshipEmployee.setSection(empTwoSecondPriority);
+				for(Section section : sections) {
+					if(section.getName().contains(empOneTopPriority.getName())) {
+						employee.setSection(section);
+					}
+					if(section.getName().contains(empTwoSecondPriority.getName())) {
+						relationshipEmployee.setSection(section);
+					}
+				}
 			}
 			else {
 				//iterations2 is top priority
-				employee.setSection(empOneSecondPriority);
-				relationshipEmployee.setSection(empTwoTopPriority);
+				for(Section section : sections) {
+					if(section.getName().contains(empOneSecondPriority.getName())) {
+						employee.setSection(section);
+					}
+					if(section.getName().contains(empTwoSecondPriority.getName())) {
+						relationshipEmployee.setSection(section);
+					}
+				}
 			}
 		}
 

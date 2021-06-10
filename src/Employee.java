@@ -62,7 +62,7 @@ public class Employee {
 
 	public void setSection(Section section) {
 		this.section = section;
-		isAssignedSection = true;
+		this.isAssignedSection = true;
 		section.isAssigned = true;
 	}
 	
