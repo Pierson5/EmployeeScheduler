@@ -1,3 +1,7 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -15,6 +19,11 @@ public class Employee {
 	private String firstBreak;
 	private String secondBreak;
 	private String thirdBreak;
+	
+	
+	private String employeeName;
+	private String filename;
+	private String fileLocation;
 
 	// Array Locations
 	// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
@@ -259,5 +268,37 @@ public class Employee {
 		rotationValues[10] = new Section("EAST");
 		rotationValues[11] = new Section("WEST");
 		rotationValues[12] = new Section("FLOAT");
+	}
+	
+
+	////////////////////////////////////////////////////////////////
+	//					saveFile        			              //	
+	// Serializes employee file/rotation values  				  //
+	////////////////////////////////////////////////////////////////
+	public void saveFile(Employee employee){
+		employeeName = employee.getFullName();
+		filename = employeeName + ".ser";
+		fileLocation = "src\\Employee Files\\" + filename;
+		try{
+			ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(fileLocation));
+			fileOut.writeObject(employee);
+			System.out.println("File saved for " + employeeName);
+			fileOut.close();
+		} catch(FileNotFoundException e){
+			e.printStackTrace();
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+	
+	////////////////////////////////////////////////////////////////
+	//					loadFile    			                  //	
+	// De-serializes employee file/rotation values  		      //
+	////////////////////////////////////////////////////////////////
+	
+	//TODO
+	public Employee loadFile(String fullName) {
+		Employee emp = null;
+		return emp;
 	}
 }

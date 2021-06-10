@@ -1,8 +1,24 @@
 import java.util.ArrayList;
+import java.io.File;
 
 public class main {
 
 	public static void main(String[] args) {
+		
+		//create directory (in same directory program is run)
+		//to store employee files and excel files
+		File currentFolder = new File(".");
+        File employeeFolder = new File(currentFolder, "serialized");
+        if (!employeeFolder.exists()) {
+        	employeeFolder.mkdir();
+        }
+        //Create excel directory
+        File excelFolder = new File(currentFolder, "Excel");
+        if (!excelFolder.exists()) {
+        	excelFolder.mkdir();
+        }
+        System.out.println("Employee files saved in: " + employeeFolder.getAbsolutePath());
+        System.out.println("Excel files saved/stored in: " + excelFolder.getAbsolutePath());
 		
 		//Test cases, load employee files (15 employees + 2 Leads)
 		Employee a = new Employee("Jeremy", "Pierson");
