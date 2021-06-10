@@ -404,9 +404,9 @@ public class FloorPlan {
 		}
 
 		//display updated hashmaps
-		System.out.println("\n UPDATED MAPS");
-		System.out.println("\n\nEAST\n\n" + eastMap.toString());
-		System.out.println("WEST\n\n" + westMap.toString());
+		System.out.println("\nUPDATED MAPS");
+		System.out.println("\nEAST\n" + eastMap.toString());
+		System.out.println("\nWEST\n" + westMap.toString());
 
 	}
 
@@ -443,6 +443,6 @@ public class FloorPlan {
 	//go through assigned sections and compare priority values, swap if both
 	//employees have higher priorities than the other's section
 	public void balanceSection(ArrayList<Employee> team) {
-
+		
 	}
 }
