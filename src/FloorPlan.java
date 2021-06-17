@@ -412,7 +412,7 @@ public class FloorPlan {
 
 
 	//assigns section to employee with highest priority out of given team of employees
-	//TODO assumes team is not empty
+	//TODO error checking: assumes team is not empty
 	private void assignTopPriority(ArrayList<Employee> team, Section toAssign) {
 		int priorityIndex = 50;
 		int topPriorityIndex = 50;
@@ -442,7 +442,37 @@ public class FloorPlan {
 
 	//go through assigned sections and compare priority values, swap if both
 	//employees have higher priorities than the other's section
-	public void balanceSection(ArrayList<Employee> team) {
+	public void balanceSections(ArrayList<Employee> team) {
+		String startTime1 = "";
+		String startTime2 = "";
+		Section emp1Section;
+		Section emp2Section;
 		
+		for(Employee employee1 : team) {
+			for(Employee employee2 : team) {
+				startTime1 = employee1.getStartTime();
+				startTime2 = employee2.getStartTime();
+				if(startTime1 == startTime2) {
+					emp1Section = employee1.getSection();
+					emp2Section = employee2.getSection();
+					
+					//Employee1 section priority for Employee2's section is higher (or equal to) than Employee2
+					//Employee2 section priority for Employee1's section is higher (or equal to) than Employee1
+					if((employee1.sectionPriority(emp2Section) <= employee2.sectionPriority(emp2Section))
+					&&  employee2.sectionPriority(emp1Section) <= employee1.sectionPriority(emp1Section)	) {
+						//System.out.println("Swapping***** " + employee1.getFullName() + "  and   " + employee2.getFullName());
+						
+						swapSections(employee1, employee2);
+					}
+						
+				}
+			}
+		}
+	}
+	
+	private void swapSections(Employee emp1, Employee emp2) {
+		Section temp = emp1.getSection();
+		emp1.setSection(emp2.getSection());
+		emp2.setSection(temp);
 	}
 }

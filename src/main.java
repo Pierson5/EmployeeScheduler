@@ -20,6 +20,10 @@ public class main {
         System.out.println("Employee files saved in: " + employeeFolder.getAbsolutePath());
         System.out.println("Excel files saved/stored in: " + excelFolder.getAbsolutePath());
 		
+        
+        
+        
+        
 		//Test cases, load employee files (15 employees + 2 Leads)
 		Employee a = new Employee("Jeremy", "Pierson");
 		Employee b = new Employee("Jamie", "Almajose");
@@ -142,6 +146,7 @@ public class main {
 		
 		//ASSIGN SECTIONS TEST
 		swing1.assignSections(team);
+		swing1.balanceSections(team);
 		
 		//test toString and section assigning. 
 		for(int z = 0; z < team.size(); z++) {

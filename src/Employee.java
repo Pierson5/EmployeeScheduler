@@ -188,6 +188,7 @@ public class Employee {
 	}
 	
 	//returns employee rotation index of parameter "section"
+	//Lower value = higher priority, with 0 being highest priority
 	//returns -1 if not found
 	public int sectionPriority(Section section) {
 		String sectionName = section.getName();
