@@ -2,12 +2,9 @@
 public class Section {
 	
 	String name;
-	
-	//used for employee files
 	double rotationValue;
-	
-	//used for floor plan designation algorithm
 	boolean isAssigned;
+	Employee assignedToSection;
 	
 	
 	//default
@@ -39,7 +36,15 @@ public class Section {
 	public void setRotationValue(double priority) {
 		this.rotationValue = priority;
 	}
-
+	
+	public void setAssignedEmployee(Employee employee) {
+		assignedToSection = employee;
+	}
+	
+	public Employee getAssignedEmployee() {
+		return assignedToSection;
+	}
+	
 	public boolean isAssigned() {
 		return isAssigned;
 	}
@@ -87,4 +92,6 @@ public class Section {
 		else
 			return Integer.parseInt(name) - 1; 
 	}
+
+	
 }

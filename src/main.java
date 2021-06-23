@@ -145,8 +145,10 @@ public class main {
 		team.add(m); team.add(n); team.add(o); team.add(r);
 		
 		//ASSIGN SECTIONS TEST
-		swing1.assignSections(team);
+		swing1.scheduleSections(team);
+		swing1.staggerStartTimes(team);
 		swing1.balanceSections(team);
+		swing1.scheduleBreaks(team);
 		
 		//test toString and section assigning. 
 		for(int z = 0; z < team.size(); z++) {

@@ -73,6 +73,7 @@ public class Employee {
 		this.section = section;
 		this.isAssignedSection = true;
 		section.isAssigned = true;
+		section.setAssignedEmployee(this);
 	}
 	
 	public boolean isAssignedSection() {
@@ -297,8 +298,7 @@ public class Employee {
 	// De-serializes employee file/rotation values  		      //
 	////////////////////////////////////////////////////////////////
 	
-	//TODO
-	public Employee loadFile(String fullName) {
+	public Employee loadFile(String employeeFullName) {
 		Employee emp = null;
 		return emp;
 	}
