@@ -1,11 +1,14 @@
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Queue;
 
 public class FloorPlan {
 
@@ -240,10 +243,12 @@ public class FloorPlan {
 			// ahead for employee with a different start time to swap with.
 			if (counter == MAX_REPEAT_START_TIMES) {
 				for (int j = i + 1; j < sections.size(); j++) {
-					// start times differ and are on the same side of casino. (i.e. do not swap HL and 4)
-					//TODO probably easier with a circular linked list. Circle around east side/west side
+					// start times differ and are on the same side of casino. (i.e. do not swap HL
+					// and 4)
+					// TODO probably easier with a circular linked list. Circle around east
+					// side/west side
 					if (!sections.get(j).getAssignedEmployee().getStartTime().equals(startTime)
-						&& sections.get(j).isEast() == sections.get(i).isEast()) {
+							&& sections.get(j).isEast() == sections.get(i).isEast()) {
 						swapSections(sections.get(i).getAssignedEmployee(), sections.get(j).getAssignedEmployee());
 						counter = 0; // reset counter
 					} else
@@ -254,22 +259,72 @@ public class FloorPlan {
 		}
 	}
 
+	// Schedules break times based on employee start time.
+	// Employees with the same start time are scheduled breaks
+	// in cyclical fashion. I.E. if available times are [10pm, 10:30pm]
+	// emp1 = 10pm, emp2 = 1030pm, emp3 = back to 10pm
+	// Times are stored in groups of 3, 1st break, 2nd break, 3rd break.
 	public void scheduleBreaks(ArrayList<Employee> team) {
+
+		LinkedHashMap<String, Queue<LocalTime>> availableBreakTimes = new LinkedHashMap<String, Queue<LocalTime>>();
+		
 		for (Section section : sections) {
 			Employee employee = section.getAssignedEmployee();
-			DateTimeFormatter fmt = new DateTimeFormatterBuilder()
-					.parseCaseInsensitive() //ignore lowercase am/pm
-					.appendPattern("h:mma") //time format
-				    .toFormatter(Locale.ENGLISH); //set locale
-			LocalTime test = LocalTime.parse(employee.getStartTime(), fmt);
+			String employeeStartTime = employee.getStartTime();
+			LocalTime startTime = stringToLocalTime(employeeStartTime);
+			Queue<LocalTime> availableTimes = new ArrayDeque<LocalTime>();
 
-			//TODO
-			
-			
-			
-			System.out.println("Parsed Time: " + test);
+			// attempt to pull break times from map, if not there, create new list
+			// for that start time.
+			if (!availableBreakTimes.containsKey(employeeStartTime)) {
+				for (int i = 0; i < team.size() / 3; i++) {
+					availableTimes.add(startTime.plusHours((long) 2.0));
+					availableTimes.add(startTime.plusHours((long) 4.0));
+					availableTimes.add(startTime.plusHours((long) 6.0));
+
+					availableTimes.add(startTime.plusHours((long) 2.5));
+					availableTimes.add(startTime.plusHours((long) 4.5));
+					availableTimes.add(startTime.plusHours((long) 6.5));
+
+					availableTimes.add(startTime.plusHours((long) 2.25));
+					availableTimes.add(startTime.plusHours((long) 4.0));
+					availableTimes.add(startTime.plusHours((long) 6.25));
+
+					availableTimes.add(startTime.plusHours((long) 2.75));
+					availableTimes.add(startTime.plusHours((long) 5));
+					availableTimes.add(startTime.plusHours((long) 6.75));
+					
+					/*
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.0));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 4.0));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.0));
+
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.5));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 4.5));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.5));
+
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.25));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 4.0));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.25));
+
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.75));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 5));
+					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.75));
+					*/
+				}
+				availableBreakTimes.put(employeeStartTime, availableTimes);
+			}
+			employee.setFirstBreak(availableBreakTimes.get(employeeStartTime).poll().toString());
+			employee.setSecondBreak(availableBreakTimes.get(employeeStartTime).poll().toString());
+			employee.setThirdBreak(availableBreakTimes.get(employeeStartTime).poll().toString());
 		}
+	}
 
+	public LocalTime stringToLocalTime(String time) {
+		DateTimeFormatter fmt = new DateTimeFormatterBuilder().parseCaseInsensitive() // ignore lowercase am/pm
+				.appendPattern("h:mma") // time format
+				.toFormatter(Locale.ENGLISH); // set locale
+		return LocalTime.parse(time, fmt);
 	}
 
 	// Returns the employee with the highest priority of a given section

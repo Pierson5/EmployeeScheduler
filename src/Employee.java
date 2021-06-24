@@ -164,15 +164,6 @@ public class Employee {
 		this.thirdBreak = thirdBreak;
 	}
 	
-	
-	//TODO
-	public static void setBreakTimes(Employee employee) {
-		LocalTime shiftStartTime = LocalTime.parse(employee.getStartTime());
-		employee.setFirstBreak(shiftStartTime.plusHours(2).toString());
-		employee.setSecondBreak(shiftStartTime.plusHours(4).toString());
-		employee.setThirdBreak(shiftStartTime.plusHours(6).toString());
-	}
-	
 	public String rotationValuesToString() {
 		String result = "\n";
 		
@@ -184,7 +175,9 @@ public class Employee {
 	}
 
 	public String toString() {
-		return "\nName: " + this.getFullName() + this.section;
+		return "\nName: " + this.getFullName() + this.section +
+				 "\nBreaks: 1-" + this.getFirstBreak() + " 2-" +
+				this.getSecondBreak() + " 3-" + this.getThirdBreak();
 
 	}
 	
