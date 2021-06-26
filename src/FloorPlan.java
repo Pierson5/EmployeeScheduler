@@ -516,11 +516,7 @@ public class FloorPlan {
 			}
 		}
 
-<<<<<<< HEAD
 		// display updated hashmaps
-=======
-		//display updated hashmaps
->>>>>>> branch 'master' of https://github.com/Pierson5/EmployeeScheduler.git
 		System.out.println("\nUPDATED MAPS");
 		System.out.println("\nEAST\n" + eastMap.toString());
 		System.out.println("\nWEST\n" + westMap.toString());
@@ -557,7 +553,6 @@ public class FloorPlan {
 		toAssign.isAssigned = true;
 	}
 
-<<<<<<< HEAD
 	// go through assigned sections and compare priority values, swap if both
 	// employees have higher priorities than the other's section
 	public void balanceSections(ArrayList<Employee> team) {
@@ -595,11 +590,5 @@ public class FloorPlan {
 		Section temp = emp1.getSection();
 		emp1.setSection(emp2.getSection());
 		emp2.setSection(temp);
-=======
-	//go through assigned sections and compare priority values, swap if both
-	//employees have higher priorities than the other's section
-	public void balanceSection(ArrayList<Employee> team) {
-		
->>>>>>> branch 'master' of https://github.com/Pierson5/EmployeeScheduler.git
 	}
 }
