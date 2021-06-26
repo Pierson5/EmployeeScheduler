@@ -291,7 +291,12 @@ public class Employee {
 	// De-serializes employee file/rotation values  		      //
 	////////////////////////////////////////////////////////////////
 	
+<<<<<<< HEAD
 	public Employee loadFile(String employeeFullName) {
+=======
+	//TODO
+	public Employee loadFile(String fullName) {
+>>>>>>> branch 'master' of https://github.com/Pierson5/EmployeeScheduler.git
 		Employee emp = null;
 		return emp;
 	}
