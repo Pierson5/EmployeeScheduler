@@ -1,26 +1,40 @@
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.io.File;
-import java.time.LocalTime;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class main {
+	
+	private static String empFilePath = "";
+	private static String excelFilePath = "";
 
+	
+	
 	public static void main(String[] args) {
+		
+	    File currentFolder = new File(System.getProperty("user.dir"));
 		
 		//create directory (in same directory program is run)
 		//to store employee files and excel files
-		File currentFolder = new File(".");
-        File employeeFolder = new File(currentFolder, "serialized");
+		//File currentFolder = new File(".");
+        File employeeFolder = new File(currentFolder, "EmployeeFiles");
         if (!employeeFolder.exists()) {
+        	System.out.println("Creating Employee Directory");
         	employeeFolder.mkdir();
+        	System.out.println("Directory created successfully in: " + employeeFolder.getAbsolutePath());
         }
         //Create excel directory
         File excelFolder = new File(currentFolder, "Excel");
         if (!excelFolder.exists()) {
+        	System.out.println("Creating Excel Directory");
         	excelFolder.mkdir();
+        	System.out.println("Directory created successfully in: " + excelFolder.getAbsolutePath());
         }
-        System.out.println("Employee files saved in: " + employeeFolder.getAbsolutePath());
-        System.out.println("Excel files saved/stored in: " + excelFolder.getAbsolutePath());
+        
+        empFilePath = employeeFolder.getAbsolutePath();
+        excelFilePath = excelFolder.getAbsolutePath();
 		
         
         
@@ -138,9 +152,6 @@ public class main {
 		k.setRelationship(o);
 			
 		//Group into "team"
-		//TODO might be more efficient to use hashtable here, not arrayList
-		//especially when iterating through to set breaktimes, might have
-		//to revisit the same employee multiple times. 
 		ArrayList<Employee> team = new ArrayList<Employee>();
 		team.add(a); team.add(b); team.add(c); team.add(d); team.add(e); team.add(f);
 		team.add(g); team.add(h); team.add(i); team.add(j); team.add(k); team.add(l); 
@@ -153,9 +164,12 @@ public class main {
 		swing1.scheduleBreaks(team);
 		
 		//test toString and section assigning. 
-		for(int z = 0; z < team.size(); z++) {
-			System.out.println(team.get(z).toString());
+		for(Employee emp : team) {
+			System.out.println(emp.toString());
 			System.out.println("\n");
+			
+			emp.saveFile(empFilePath);
+			
 		}
-	}
+ 	}
 }

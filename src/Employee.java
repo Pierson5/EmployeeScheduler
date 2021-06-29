@@ -19,8 +19,7 @@ public class Employee {
 	private String firstBreak;
 	private String secondBreak;
 	private String thirdBreak;
-	
-	
+
 	private String employeeName;
 	private String filename;
 	private String fileLocation;
@@ -32,7 +31,6 @@ public class Employee {
 
 	// employee rotation values
 	Section[] rotationValues = new Section[NUM_OF_SECTIONS];
-
 
 	// default employee constructor
 	public Employee() {
@@ -53,7 +51,7 @@ public class Employee {
 		this.hasRelationship = false;
 		this.isAssignedSection = false;
 	}
-	
+
 	/*
 	 * Construct employee object with name and relationship status
 	 */
@@ -75,7 +73,7 @@ public class Employee {
 		section.isAssigned = true;
 		section.setAssignedEmployee(this);
 	}
-	
+
 	public boolean isAssignedSection() {
 		return isAssignedSection;
 	}
@@ -103,19 +101,18 @@ public class Employee {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
+
 	public String getFullName() {
 		return this.firstName + " " + this.lastName;
 	}
-	
+
 	public boolean hasRelationship() {
 		return hasRelationship;
 	}
-	
+
 	public Employee getRelationshipEmployee() {
 		return relationship;
 	}
-	
 
 	public void setRelationship(Employee employee) {
 		this.relationship = employee;
@@ -123,7 +120,7 @@ public class Employee {
 		this.hasRelationship = true;
 		employee.hasRelationship = true;
 	}
-	
+
 	public String getStartTime() {
 		return startTime;
 	}
@@ -131,7 +128,7 @@ public class Employee {
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
-	
+
 	public Section[] getRotationValues() {
 		return rotationValues;
 	}
@@ -139,7 +136,7 @@ public class Employee {
 	public void setRotationValues(Section[] rotationPriority) {
 		this.rotationValues = rotationPriority;
 	}
-	
+
 	public String getFirstBreak() {
 		return firstBreak;
 	}
@@ -163,33 +160,32 @@ public class Employee {
 	public void setThirdBreak(String thirdBreak) {
 		this.thirdBreak = thirdBreak;
 	}
-	
+
 	public String rotationValuesToString() {
 		String result = "\n";
-		
-		for(Section sect : rotationValues) {
-			result += sect.getName() + ": " + sect.getRotationValue() + "\n"; 
+
+		for (Section sect : rotationValues) {
+			result += sect.getName() + ": " + sect.getRotationValue() + "\n";
 		}
-		
+
 		return result;
 	}
 
 	public String toString() {
-		return "\nName: " + this.getFullName() + this.section +
-				 "\nBreaks: 1-" + this.getFirstBreak() + " 2-" +
-				this.getSecondBreak() + " 3-" + this.getThirdBreak();
+		return "\nName: " + this.getFullName() + this.section + "\nBreaks: " + this.getFirstBreak() + "  "
+				+ this.getSecondBreak() + "  " + this.getThirdBreak();
 
 	}
-	
-	//returns employee rotation index of parameter "section"
-	//Lower value = higher priority, with 0 being highest priority
-	//returns -1 if not found
+
+	// returns employee rotation index of parameter "section"
+	// Lower value = higher priority, with 0 being highest priority
+	// returns -1 if not found
 	public int sectionPriority(Section section) {
 		String sectionName = section.getName();
 		int sectionPriority = -1;
-		
-		for(int i = 0; i < rotationValues.length; i++) {
-			if(sectionName.contains(rotationValues[i].getName())) {
+
+		for (int i = 0; i < rotationValues.length; i++) {
+			if (sectionName.contains(rotationValues[i].getName())) {
 				sectionPriority = i;
 			}
 		}
@@ -201,41 +197,40 @@ public class Employee {
 		String sectionName = this.section.getName();
 		int sectionIndex = 0;
 		double sectionValue = 0.0;
-		
+
 		// if working multiple sections, divide rotation value by number of
 		// sections worked.
 		// i.e. if working 9.HL, and rotation value is +1, rotation value will be 0.5
 		// for 9 and HL
-		if (sectionName.length() > 1
-				&& !sectionName.equals("EAST")
-				&& !sectionName.equals("WEST")
+		if (sectionName.length() > 1 && !sectionName.equals("EAST") && !sectionName.equals("WEST")
 				&& !sectionName.equals("FLOAT")) {
-			
-			//split string up at period delimiter 
+
+			// split string up at period delimiter
 			String[] sections = sectionName.split("\\.");
-			
-			//iterate through tokens, calculate new priority value, add to old priority value
-			for(String i : sections) {
+
+			// iterate through tokens, calculate new priority value, add to old priority
+			// value
+			for (String i : sections) {
 				sectionIndex = Section.nameToRotationIndex(i);
 				sectionValue = 1.0 / sections.length;
-				
+
 				System.out.println(this.getFirstName() + " Adding " + sectionValue + " to section " + i);
-				
+
 				this.rotationValues[sectionIndex].addToRotationValue(sectionValue);
 			}
 		}
-		
-		//section length string = 1, only one section to update, no calculations needed
+
+		// section length string = 1, only one section to update, no calculations needed
 		else {
 			sectionIndex = Section.nameToRotationIndex(sectionName);
-			
+
 			System.out.println(this.getFirstName() + " Adding " + 1.0 + " to section " + sectionName);
-			
+
 			this.rotationValues[sectionIndex].addToRotationValue(1.0);
 		}
 	}
 
-	// Sorts an employee's rotation values in descending order, 
+	// Sorts an employee's rotation values in descending order,
 	// used to assign sections based on highest values of that employee
 	public void sortRotation() {
 
@@ -244,8 +239,8 @@ public class Employee {
 			// ternary operator
 			return o1.getRotationValue() > o2.getRotationValue() ? 1 : -1;
 		};
-		//Arrays.sort produces ascending order, reverse the comparator to 
-		//produce descending order
+		// Arrays.sort produces ascending order, reverse the comparator to
+		// produce descending order
 		Arrays.sort(rotationValues, descRotationValue.reversed());
 	}
 
@@ -264,39 +259,33 @@ public class Employee {
 		rotationValues[11] = new Section("WEST");
 		rotationValues[12] = new Section("FLOAT");
 	}
-	
 
 	////////////////////////////////////////////////////////////////
-	//					saveFile        			              //	
-	// Serializes employee file/rotation values  				  //
+	// saveFile //
+	// Serializes employee file/rotation values //
 	////////////////////////////////////////////////////////////////
-	public void saveFile(Employee employee){
-		employeeName = employee.getFullName();
+	public void saveFile(String filePath) {
+		employeeName = this.getFullName();
 		filename = employeeName + ".ser";
-		fileLocation = "src\\Employee Files\\" + filename;
-		try{
-			ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(fileLocation));
-			fileOut.writeObject(employee);
+		try {
+			ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(filePath));
+			fileOut.writeObject(this);
 			System.out.println("File saved for " + employeeName);
 			fileOut.close();
-		} catch(FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	////////////////////////////////////////////////////////////////
-	//					loadFile    			                  //	
-	// De-serializes employee file/rotation values  		      //
+	// loadFile //
+	// De-serializes employee file/rotation values //
 	////////////////////////////////////////////////////////////////
-	
-<<<<<<< HEAD
-	public Employee loadFile(String employeeFullName) {
-=======
+
 	//TODO
 	public Employee loadFile(String fullName) {
->>>>>>> branch 'master' of https://github.com/Pierson5/EmployeeScheduler.git
 		Employee emp = null;
 		return emp;
 	}

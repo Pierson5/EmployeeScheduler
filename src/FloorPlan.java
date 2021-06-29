@@ -266,7 +266,7 @@ public class FloorPlan {
 	// Times are stored in groups of 3, 1st break, 2nd break, 3rd break.
 	public void scheduleBreaks(ArrayList<Employee> team) {
 
-		LinkedHashMap<String, Queue<LocalTime>> availableBreakTimes = new LinkedHashMap<String, Queue<LocalTime>>();
+		HashMap<String, Queue<LocalTime>> availableBreakTimes = new HashMap<String, Queue<LocalTime>>();
 		
 		for (Section section : sections) {
 			Employee employee = section.getAssignedEmployee();
@@ -278,39 +278,25 @@ public class FloorPlan {
 			// for that start time.
 			if (!availableBreakTimes.containsKey(employeeStartTime)) {
 				for (int i = 0; i < team.size() / 3; i++) {
-					availableTimes.add(startTime.plusHours((long) 2.0));
-					availableTimes.add(startTime.plusHours((long) 4.0));
-					availableTimes.add(startTime.plusHours((long) 6.0));
-
-					availableTimes.add(startTime.plusHours((long) 2.5));
-					availableTimes.add(startTime.plusHours((long) 4.5));
-					availableTimes.add(startTime.plusHours((long) 6.5));
-
-					availableTimes.add(startTime.plusHours((long) 2.25));
-					availableTimes.add(startTime.plusHours((long) 4.0));
-					availableTimes.add(startTime.plusHours((long) 6.25));
-
-					availableTimes.add(startTime.plusHours((long) 2.75));
-					availableTimes.add(startTime.plusHours((long) 5));
-					availableTimes.add(startTime.plusHours((long) 6.75));
+					//2h, 4, 6h
+					availableTimes.add(startTime.plusMinutes((long) 120));
+					availableTimes.add(startTime.plusMinutes((long) 240));
+					availableTimes.add(startTime.plusMinutes((long) 360));
 					
-					/*
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.0));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 4.0));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.0));
-
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.5));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 4.5));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.5));
-
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.25));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 4.0));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.25));
-
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 2.75));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 5));
-					availableBreakTimes.put(employeeStartTime, startTime.plusHours((long) 6.75));
-					*/
+					//2h 30m, 4h 30m, 6h 30m
+					availableTimes.add(startTime.plusMinutes((long) 150));
+					availableTimes.add(startTime.plusMinutes((long) 270));
+					availableTimes.add(startTime.plusMinutes((long) 390));
+					
+					//2h 15m, 4h, 6h 15m
+					availableTimes.add(startTime.plusMinutes((long) 135));
+					availableTimes.add(startTime.plusMinutes((long) 240));
+					availableTimes.add(startTime.plusMinutes((long) 375));
+					
+					//2h 45m, 5h, 6h 45m
+					availableTimes.add(startTime.plusMinutes((long) 165));
+					availableTimes.add(startTime.plusMinutes((long) 300));
+					availableTimes.add(startTime.plusMinutes((long) 405));
 				}
 				availableBreakTimes.put(employeeStartTime, availableTimes);
 			}
