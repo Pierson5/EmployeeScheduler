@@ -36,27 +36,27 @@ public class main {
         
         
 		//Test cases, load employee files (15 employees + 2 Leads)
-		Employee a = new Employee("Jeremy", "Pierson");
-		Employee b = new Employee("Jamie", "Almajose");
-		Employee c = new Employee("Jeslee", "Cachola");
-		Employee d = new Employee("Ryan", "Crawley");
-		Employee e = new Employee("Sara", "Yoon");
-		Employee f = new Employee("Estevan", "Negrete");
-		Employee g = new Employee("Ruth", "Eloriaga");
-		Employee h = new Employee("Arvydas", "Stropus");
+		Employee a = new Employee("Jeremy", "P");
+		Employee b = new Employee("Jamie", "Ale");
+		Employee c = new Employee("Jeslee", "Cac");
+		Employee d = new Employee("Ryan", "Cry");
+		Employee e = new Employee("Sara", "Yn");
+		Employee f = new Employee("Estevan", "Nee");
+		Employee g = new Employee("Ruth", "Ela");
+		Employee h = new Employee("Arvydas", "Sts");
 		
-		Employee i = new Employee("Jocelyne", "Bryson");
-		Employee j = new Employee("Jose", "Quinonez");
-		Employee k = new Employee("Matt", "Zulik");
-		Employee l = new Employee("Julia", "Depasquale");
-		Employee m = new Employee("Aidas", "Stropus");
-		Employee n = new Employee("Erika", "Billot");
-		Employee o = new Employee("Oscar", "Mojica");
+		Employee i = new Employee("Jocelyne", "Bon");
+		Employee j = new Employee("Jose", "Quz");
+		Employee k = new Employee("Matt", "Zk");
+		Employee l = new Employee("Julia", "Dle");
+		Employee m = new Employee("Aidas", "Ss");
+		Employee n = new Employee("Erika", "Bt");
+		Employee o = new Employee("Oscar", "Ma");
 		Employee r = new Employee("Tim", "Smith");
 		
 		//leads
-		Employee p = new Employee("Alenefer", "Jaimes");
-		Employee q = new Employee("Alejandro", "Hernandez");
+		Employee p = new Employee("Alenefer", "Js");
+		Employee q = new Employee("Alejandro", "Her");
 		
 		//assign TEST shift start times
 		String SIX = "6:00pm";
