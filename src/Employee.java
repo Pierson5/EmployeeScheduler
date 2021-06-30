@@ -1,13 +1,15 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.time.LocalTime;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Employee {
-
+public class Employee implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	private int badgeNum;
 	private String firstName;
 	private String lastName;
@@ -19,10 +21,6 @@ public class Employee {
 	private String firstBreak;
 	private String secondBreak;
 	private String thirdBreak;
-
-	private String employeeName;
-	private String filename;
-	private String fileLocation;
 
 	// Array Locations
 	// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
@@ -265,13 +263,14 @@ public class Employee {
 	// Serializes employee file/rotation values //
 	////////////////////////////////////////////////////////////////
 	public void saveFile(String filePath) {
-		employeeName = this.getFullName();
-		filename = employeeName + ".ser";
+		String employeeName = this.getFullName();
+		String fileName = employeeName + ".ser";
+		File outputFile = new File(filePath, fileName);
 		try {
-			ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(filePath));
+			ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(outputFile));
 			fileOut.writeObject(this);
-			System.out.println("File saved for " + employeeName);
 			fileOut.close();
+			System.out.println(this.getFullName() + "'s file has been saved.");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -285,7 +284,7 @@ public class Employee {
 	////////////////////////////////////////////////////////////////
 
 	//TODO
-	public Employee loadFile(String fullName) {
+	public Employee loadFile(String filePath, String fullName) {
 		Employee emp = null;
 		return emp;
 	}

@@ -9,16 +9,11 @@ public class main {
 	
 	private static String empFilePath = "";
 	private static String excelFilePath = "";
-
-	
 	
 	public static void main(String[] args) {
-		
+		//Create directories for employee files and excel files if
+		//not already created. Created in same directory program is run.
 	    File currentFolder = new File(System.getProperty("user.dir"));
-		
-		//create directory (in same directory program is run)
-		//to store employee files and excel files
-		//File currentFolder = new File(".");
         File employeeFolder = new File(currentFolder, "EmployeeFiles");
         if (!employeeFolder.exists()) {
         	System.out.println("Creating Employee Directory");
@@ -32,11 +27,11 @@ public class main {
         	excelFolder.mkdir();
         	System.out.println("Directory created successfully in: " + excelFolder.getAbsolutePath());
         }
-        
         empFilePath = employeeFolder.getAbsolutePath();
         excelFilePath = excelFolder.getAbsolutePath();
 		
         
+        //attempt to deserialize employee files TODO
         
         
         
@@ -62,10 +57,6 @@ public class main {
 		//leads
 		Employee p = new Employee("Alenefer", "Jaimes");
 		Employee q = new Employee("Alejandro", "Hernandez");
-		
-		
-		String test1 = "5";
-		String test2 = "5.6";
 		
 		//assign TEST shift start times
 		String SIX = "6:00pm";
@@ -147,8 +138,7 @@ public class main {
 		FloorPlan.displayFloorPlans();
 		
 		
-		//relationship test, only have to assign one relationship status
-		//will assign the other relationship status automatically
+		//relationship test, k has relationship with o and vice versa
 		k.setRelationship(o);
 			
 		//Group into "team"
