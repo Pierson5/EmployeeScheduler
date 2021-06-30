@@ -29,11 +29,6 @@ public class main {
         }
         empFilePath = employeeFolder.getAbsolutePath();
         excelFilePath = excelFolder.getAbsolutePath();
-		
-        
-        //attempt to deserialize employee files TODO
-        
-        
         
 		//Test cases, load employee files (15 employees + 2 Leads)
 		Employee a = new Employee("Jeremy", "P");
@@ -57,6 +52,14 @@ public class main {
 		//leads
 		Employee p = new Employee("Alenefer", "Js");
 		Employee q = new Employee("Alejandro", "Her");
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		//assign TEST shift start times
 		String SIX = "6:00pm";
@@ -155,6 +158,7 @@ public class main {
 		
 		//test toString and section assigning. 
 		for(Employee emp : team) {
+			emp.updateRotation();
 			System.out.println(emp.toString());
 			System.out.println("\n");
 			

@@ -170,8 +170,11 @@ public class Employee implements Serializable{
 	}
 
 	public String toString() {
-		return "\nName: " + this.getFullName() + this.section + "\nBreaks: " + this.getFirstBreak() + "  "
-				+ this.getSecondBreak() + "  " + this.getThirdBreak();
+		return "\nName: " + this.getFullName() + "\nAssigned Section = " + this.section.getName() + 
+				"\nBreaks: " + this.getFirstBreak() + "  "
+				+ this.getSecondBreak() + "  " + this.getThirdBreak() +
+				"\nRotation Values = " + Arrays.toString(this.getRotationValues());
+				
 
 	}
 
@@ -284,7 +287,7 @@ public class Employee implements Serializable{
 	////////////////////////////////////////////////////////////////
 
 	//TODO
-	public Employee loadFile(String filePath, String fullName) {
+	public static Employee loadFile(String filePath, String fullName) {
 		Employee emp = null;
 		return emp;
 	}

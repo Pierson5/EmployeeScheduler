@@ -60,7 +60,7 @@ public class Section implements Serializable{
 	}
 	
 	public String toString() {
-		return "\nSection = " + name + "\nRotationValue = " + rotationValue + "\nisAssigned = " + isAssigned;
+		return "\nSection = " + name + ", Value = " + rotationValue;
 	}
 	
 	//Returns true if section is on the East side of the casino
@@ -83,13 +83,13 @@ public class Section implements Serializable{
 	//Index 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,    10,  11,   12
 	//Name  1, 2, 3, 4, 5, 6, 7, 8, 9, HL, EAST, WEST, FLOAT
 	public static int nameToRotationIndex(String name) {
-		if (name == "HL") 
+		if (name.equals("HL")) 
 			return 9;
-		else if (name == "EAST") 
+		else if (name.equals("EAST")) 
 			return 10;
-		else if (name == "WEST")
+		else if (name.equals("WEST"))
 			return 11;
-		else if (name == "FLOAT")
+		else if (name.equals("FLOAT"))
 			return 12;
 		else
 			return Integer.parseInt(name) - 1; 
