@@ -172,6 +172,10 @@ public class Employee implements Serializable{
 		this.thirdBreak = thirdBreak;
 	}
 	
+	public void resetRotationValues() {
+		for()
+	}
+	
 	//Resets assigned section and breaktimes
 	//used for re-serializing employee object
 	//so old data is not used in current scheduling

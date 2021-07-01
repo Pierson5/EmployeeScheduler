@@ -153,6 +153,7 @@ public class main {
 		//test toString and section assigning. 
 		for(Employee emp : team) {
 			emp.updateRotation();
+			emp.sortRotation();
 			System.out.println(emp.toString());
 			System.out.println("\n");
 			
