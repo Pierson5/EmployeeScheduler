@@ -1,7 +1,9 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -59,6 +61,17 @@ public class Employee implements Serializable{
 		this.instantiateRotationPriority();
 		this.hasRelationship = false;
 		this.setRelationship(relationshipWithThisEmployee);
+	}
+	
+	/*
+	 * Copy constructor
+	 */
+	public Employee(Employee emp) {
+		this.setFirstName(emp.getFirstName());
+		this.setLastName(emp.getLastName());
+		this.instantiateRotationPriority();
+		this.hasRelationship = false;
+		this.isAssignedSection = false;
 	}
 
 	public Section getSection() {
@@ -158,6 +171,13 @@ public class Employee implements Serializable{
 	public void setThirdBreak(String thirdBreak) {
 		this.thirdBreak = thirdBreak;
 	}
+	
+	//Resets assigned section and breaktimes
+	//used for re-serializing employee object
+	//so old data is not used in current scheduling
+	public void resetEmployeeValues() {
+		this.isAssignedSection = false;
+	}
 
 	public String rotationValuesToString() {
 		String result = "\n";
@@ -171,6 +191,7 @@ public class Employee implements Serializable{
 
 	public String toString() {
 		return "\nName: " + this.getFullName() + "\nAssigned Section = " + this.section.getName() + 
+				"\nStart Time: " + this.getStartTime() +
 				"\nBreaks: " + this.getFirstBreak() + "  "
 				+ this.getSecondBreak() + "  " + this.getThirdBreak() +
 				"\nRotation Values = " + Arrays.toString(this.getRotationValues());
@@ -285,10 +306,40 @@ public class Employee implements Serializable{
 	// loadFile //
 	// De-serializes employee file/rotation values //
 	////////////////////////////////////////////////////////////////
-
-	//TODO
 	public static Employee loadFile(String filePath, String fullName) {
 		Employee emp = null;
+		String filename = fullName + ".ser";
+		filePath = filePath + File.separator + filename;
+		
+		try
+        {   
+            // Reading employee object from file
+            FileInputStream file = new FileInputStream(filePath);
+            ObjectInputStream in = new ObjectInputStream(file);
+              
+            // deserialization of object
+            emp = (Employee)in.readObject();
+              
+            //reset old data
+            
+            emp.resetEmployeeValues();
+            
+            in.close();
+            file.close();
+              
+            System.out.println("Object has been deserialized ");
+        }
+          
+        catch(IOException e)
+        {
+        	e.printStackTrace();
+            System.out.println("IOException is caught during deserialization");
+        }
+          
+        catch(ClassNotFoundException e)
+        {
+            System.out.println("ClassNotFoundException is caught during deserialization");
+        }
 		return emp;
 	}
 }

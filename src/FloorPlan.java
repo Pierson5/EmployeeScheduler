@@ -3,6 +3,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -50,8 +51,8 @@ public class FloorPlan {
 	public void setSections(ArrayList<Section> sections2) {
 		sections = sections2;
 	}
-
-	// TODO return array of sections as a string [1, 2, 3, etc...]
+	
+	//TODO
 	public String toString() {
 		return "";
 	}
@@ -244,9 +245,11 @@ public class FloorPlan {
 			if (counter == MAX_REPEAT_START_TIMES) {
 				for (int j = i + 1; j < sections.size(); j++) {
 					// start times differ and are on the same side of casino. (i.e. do not swap HL
-					// and 4)
-					// TODO probably easier with a circular linked list. Circle around east
-					// side/west side
+					// and 4 [same side])
+					
+					System.out.println("CHECKING SECTION " + sections.get(j).getName() + 
+										"\nASSIGNED TO: " + sections.get(j).getAssignedEmployee().getFullName());
+					
 					if (!sections.get(j).getAssignedEmployee().getStartTime().equals(startTime)
 							&& sections.get(j).isEast() == sections.get(i).isEast()) {
 						swapSections(sections.get(i).getAssignedEmployee(), sections.get(j).getAssignedEmployee());

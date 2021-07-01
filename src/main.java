@@ -30,36 +30,31 @@ public class main {
         empFilePath = employeeFolder.getAbsolutePath();
         excelFilePath = excelFolder.getAbsolutePath();
         
+        System.out.println("Loading employee files from: " + empFilePath);
+        
+       
 		//Test cases, load employee files (15 employees + 2 Leads)
-		Employee a = new Employee("Jeremy", "P");
-		Employee b = new Employee("Jamie", "Ale");
-		Employee c = new Employee("Jeslee", "Cac");
-		Employee d = new Employee("Ryan", "Cry");
-		Employee e = new Employee("Sara", "Yn");
-		Employee f = new Employee("Estevan", "Nee");
-		Employee g = new Employee("Ruth", "Ela");
-		Employee h = new Employee("Arvydas", "Sts");
+		Employee a = Employee.loadFile(empFilePath, "Jeremy P");
+		Employee b = Employee.loadFile(empFilePath, "Jamie Ale");
+		Employee c = Employee.loadFile(empFilePath, "Jeslee Cac");
+		Employee d = Employee.loadFile(empFilePath, "Ryan Cry");
+		Employee e = Employee.loadFile(empFilePath, "Sara Yn");
+		Employee f = Employee.loadFile(empFilePath, "Estevan Nee");
+		Employee g = Employee.loadFile(empFilePath, "Ruth Ela");
+		Employee h = Employee.loadFile(empFilePath, "Arvydas Sts");
 		
-		Employee i = new Employee("Jocelyne", "Bon");
-		Employee j = new Employee("Jose", "Quz");
-		Employee k = new Employee("Matt", "Zk");
-		Employee l = new Employee("Julia", "Dle");
-		Employee m = new Employee("Aidas", "Ss");
-		Employee n = new Employee("Erika", "Bt");
-		Employee o = new Employee("Oscar", "Ma");
-		Employee r = new Employee("Tim", "Smith");
+		Employee i = Employee.loadFile(empFilePath, "Jocelyne Bon");
+		Employee j = Employee.loadFile(empFilePath, "Jose Quz");
+		Employee k = Employee.loadFile(empFilePath, "Matt Zk");
+		Employee l = Employee.loadFile(empFilePath, "Julia Dle");
+		Employee m = Employee.loadFile(empFilePath, "Aidas Ss");
+		Employee n = Employee.loadFile(empFilePath, "Erika Bt");
+		Employee o = Employee.loadFile(empFilePath, "Oscar Ma");
+		Employee r = Employee.loadFile(empFilePath, "Tim Smith");
 		
 		//leads
 		Employee p = new Employee("Alenefer", "Js");
 		Employee q = new Employee("Alejandro", "Her");
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		//assign TEST shift start times
 		String SIX = "6:00pm";
@@ -82,6 +77,15 @@ public class main {
 		o.setStartTime(SEVEN);
 		
 		r.setStartTime(SIX);
+		
+		//relationship test, k has relationship with o and vice versa
+		k.setRelationship(o);
+					
+		//Group into "team"
+		ArrayList<Employee> team = new ArrayList<Employee>();
+		team.add(a); team.add(b); team.add(c); team.add(d); team.add(e); team.add(f);
+		team.add(g); team.add(h); team.add(i); team.add(j); team.add(k); team.add(l); 
+		team.add(m); team.add(n); team.add(o); team.add(r);
 		
 		//Instantiate sections 
 		//West side
@@ -140,17 +144,7 @@ public class main {
 		System.out.println("=============CURRENT FLOOR PLAN=====================\n");
 		FloorPlan.displayFloorPlans();
 		
-		
-		//relationship test, k has relationship with o and vice versa
-		k.setRelationship(o);
-			
-		//Group into "team"
-		ArrayList<Employee> team = new ArrayList<Employee>();
-		team.add(a); team.add(b); team.add(c); team.add(d); team.add(e); team.add(f);
-		team.add(g); team.add(h); team.add(i); team.add(j); team.add(k); team.add(l); 
-		team.add(m); team.add(n); team.add(o); team.add(r);
-		
-		//ASSIGN SECTIONS TEST
+		//ASSIGN SECTIONS AND BREAKS
 		swing1.scheduleSections(team);
 		swing1.staggerStartTimes(team);
 		swing1.balanceSections(team);
@@ -163,7 +157,6 @@ public class main {
 			System.out.println("\n");
 			
 			emp.saveFile(empFilePath);
-			
 		}
  	}
 }
