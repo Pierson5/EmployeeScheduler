@@ -1,8 +1,8 @@
 import java.io.Serializable;
 
-public class Section implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class Section implements Serializable, Comparable<Section>{
 	
+	private static final long serialVersionUID = -6005069505940167935L;
 	String name;
 	double rotationValue;
 	boolean isAssigned;
@@ -93,6 +93,11 @@ public class Section implements Serializable{
 			return 12;
 		else
 			return Integer.parseInt(name) - 1; 
+	}
+
+	@Override
+	public int compareTo(Section o) {
+		return Double.compare(this.getRotationValue(), o.getRotationValue());
 	}
 
 	

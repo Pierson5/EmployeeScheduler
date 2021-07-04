@@ -52,9 +52,11 @@ public class main {
 		Employee o = Employee.loadFile(empFilePath, "Oscar Ma");
 		Employee r = Employee.loadFile(empFilePath, "Tim Smith");
 		
+		
 		//leads
 		Employee p = new Employee("Alenefer", "Js");
 		Employee q = new Employee("Alejandro", "Her");
+		
 		
 		//assign TEST shift start times
 		String SIX = "6:00pm";
@@ -137,12 +139,13 @@ public class main {
 				forFifteenEmployees.size(), forFifteenEmployees);
 		
 		//add floor plan to hashtable
-		FloorPlan.addFloorPlan(swing1);
+		FloorPlanDirectory floorPlanDirectory = new FloorPlanDirectory();
+		floorPlanDirectory.addFloorPlan(swing1);
 		
 		//TODO
 		//test toString for hashtable
 		System.out.println("=============CURRENT FLOOR PLAN=====================\n");
-		FloorPlan.displayFloorPlans();
+		floorPlanDirectory.toString();
 		
 		//ASSIGN SECTIONS AND BREAKS
 		swing1.scheduleSections(team);
@@ -156,6 +159,8 @@ public class main {
 			emp.sortRotation();
 			System.out.println(emp.toString());
 			System.out.println("\n");
+			
+			System.out.println(emp.getFirstName() + " assigned to section: " + emp.getSection().getName());
 			
 			emp.saveFile(empFilePath);
 		}

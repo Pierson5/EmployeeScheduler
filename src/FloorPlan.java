@@ -3,19 +3,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Queue;
 
 public class FloorPlan {
-
-	// store floorPlans here
-	private static Hashtable<String, FloorPlan> floorPlans = new Hashtable<String, FloorPlan>();
-
 	private int numOfEmployees;
 	private String name;
 	private ArrayList<Section> sections;
@@ -54,23 +47,13 @@ public class FloorPlan {
 	
 	//TODO
 	public String toString() {
-		return "";
-	}
-
-	public static boolean addFloorPlan(FloorPlan newPlan) {
-		// check if entry is already in hashtable
-		if (floorPlans.containsKey(newPlan.name)) {
-			System.out.println("An entry by the name " + newPlan.name + " already exists");
-			return false;
-		} else {
-			floorPlans.put(newPlan.name, newPlan);
-			return true;
+		StringBuilder sb = new StringBuilder();
+		String floorPlanTitle = "\nSECTIONS\n";
+		sb.append(floorPlanTitle);
+		for(Section section : sections) {
+			sb.append(section.getName() + "\n");
 		}
-	}
-
-	// goes through each floorPlan and calls my toString method to display
-	public static void displayFloorPlans() {
-		System.out.println(floorPlans.toString());
+		return sb.toString();
 	}
 
 	// 1. Check relationship status, if both employees with relationship are
@@ -247,8 +230,8 @@ public class FloorPlan {
 					// start times differ and are on the same side of casino. (i.e. do not swap HL
 					// and 4 [same side])
 					
-					System.out.println("CHECKING SECTION " + sections.get(j).getName() + 
-										"\nASSIGNED TO: " + sections.get(j).getAssignedEmployee().getFullName());
+					System.out.println("CHECKING SECTION " + sections.get(j).getName());
+					System.out.println("\nASSIGNED TO: " + sections.get(j).getAssignedEmployee().getFullName());			
 					
 					if (!sections.get(j).getAssignedEmployee().getStartTime().equals(startTime)
 							&& sections.get(j).isEast() == sections.get(i).isEast()) {
@@ -451,8 +434,8 @@ public class FloorPlan {
 		}
 
 		// display results of method TESTING
-		System.out.println("EMP 1 rotation vals:   " + employee.rotationValuesToString());
-		System.out.println("EMP 2 rotation vals:   " + relationshipEmployee.rotationValuesToString());
+		System.out.println(employee.getFirstName() + " rotation vals:   " + employee.rotationValuesToString());
+		System.out.println(relationshipEmployee.getFirstName() + " rotation vals:   " + relationshipEmployee.rotationValuesToString());
 
 		System.out.println(employee.getFullName() + " (1) assigned to section " + employee.getSection().toString());
 		System.out.println(relationshipEmployee.getFullName() + " (2) assigned to section "

@@ -7,11 +7,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Comparator;
+
+import org.apache.poi.util.SystemOutLogger;
 
 public class Employee implements Serializable{
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = 8958153751540631504L;
 	private int badgeNum;
 	private String firstName;
 	private String lastName;
@@ -173,7 +173,9 @@ public class Employee implements Serializable{
 	}
 	
 	public void resetRotationValues() {
-		for()
+		for(Section section : rotationValues) {
+			section.setRotationValue(0);
+		}
 	}
 	
 	//Resets assigned section and breaktimes
@@ -240,8 +242,6 @@ public class Employee implements Serializable{
 				sectionIndex = Section.nameToRotationIndex(i);
 				sectionValue = 1.0 / sections.length;
 
-				System.out.println(this.getFirstName() + " Adding " + sectionValue + " to section " + i);
-
 				this.rotationValues[sectionIndex].addToRotationValue(sectionValue);
 			}
 		}
@@ -250,24 +250,21 @@ public class Employee implements Serializable{
 		else {
 			sectionIndex = Section.nameToRotationIndex(sectionName);
 
-			System.out.println(this.getFirstName() + " Adding " + 1.0 + " to section " + sectionName);
-
 			this.rotationValues[sectionIndex].addToRotationValue(1.0);
 		}
 	}
 
-	// Sorts an employee's rotation values in descending order,
+	// Sorts an employee's rotation values in ascending order,
 	// used to assign sections based on highest values of that employee
 	public void sortRotation() {
-
+		/*
 		// anonymous class with Lambda expression
 		Comparator<Section> descRotationValue = (o1, o2) -> {
 			// ternary operator
 			return o1.getRotationValue() > o2.getRotationValue() ? 1 : -1;
 		};
-		// Arrays.sort produces ascending order, reverse the comparator to
-		// produce descending order
-		Arrays.sort(rotationValues, descRotationValue.reversed());
+		*/
+		Arrays.sort(rotationValues);
 	}
 
 	private void instantiateRotationPriority() {
@@ -286,10 +283,7 @@ public class Employee implements Serializable{
 		rotationValues[12] = new Section("FLOAT");
 	}
 
-	////////////////////////////////////////////////////////////////
-	// saveFile //
-	// Serializes employee file/rotation values //
-	////////////////////////////////////////////////////////////////
+	// Serializes employee file/rotation values
 	public void saveFile(String filePath) {
 		String employeeName = this.getFullName();
 		String fileName = employeeName + ".ser";
@@ -298,7 +292,6 @@ public class Employee implements Serializable{
 			ObjectOutputStream fileOut = new ObjectOutputStream(new FileOutputStream(outputFile));
 			fileOut.writeObject(this);
 			fileOut.close();
-			System.out.println(this.getFullName() + "'s file has been saved.");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -306,32 +299,34 @@ public class Employee implements Serializable{
 		}
 	}
 
-	////////////////////////////////////////////////////////////////
-	// loadFile //
-	// De-serializes employee file/rotation values //
-	////////////////////////////////////////////////////////////////
+	// De-serializes employee file
 	public static Employee loadFile(String filePath, String fullName) {
 		Employee emp = null;
 		String filename = fullName + ".ser";
+		String[] splitStr = fullName.split("\\s+");
 		filePath = filePath + File.separator + filename;
 		
 		try
         {   
-            // Reading employee object from file
-            FileInputStream file = new FileInputStream(filePath);
-            ObjectInputStream in = new ObjectInputStream(file);
-              
-            // deserialization of object
-            emp = (Employee)in.readObject();
-              
+			File f = new File(filePath);
+			if(!f.exists()) {
+				System.out.println("FILE NOT FOUND, CREATING FILE");
+				emp = new Employee(splitStr[0], splitStr[1]);
+			}
+			else {
+				// Reading employee object from file
+	            FileInputStream fileIn = new FileInputStream(filePath);
+	            ObjectInputStream in = new ObjectInputStream(fileIn);
+	              
+	            
+	            // deserialization of object
+	            emp = (Employee)in.readObject();
+	            in.close();
+	            fileIn.close();
+			}
+			
             //reset old data
-            
             emp.resetEmployeeValues();
-            
-            in.close();
-            file.close();
-              
-            System.out.println("Object has been deserialized ");
         }
           
         catch(IOException e)
