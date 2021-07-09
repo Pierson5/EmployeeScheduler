@@ -33,7 +33,7 @@ public class main {
         System.out.println("Loading employee files from: " + empFilePath);
         
        
-		//Test cases, load employee files (15 employees + 2 Leads)
+		//Test cases, load employee files (16 employees + 2 Leads)
 		Employee a = Employee.loadFile(empFilePath, "Jeremy P");
 		Employee b = Employee.loadFile(empFilePath, "Jamie Ale");
 		Employee c = Employee.loadFile(empFilePath, "Jeslee Cac");
@@ -142,13 +142,16 @@ public class main {
 		FloorPlanDirectory floorPlanDirectory = new FloorPlanDirectory();
 		floorPlanDirectory.addFloorPlan(swing1);
 		
-		//TODO
 		//test toString for hashtable
-		System.out.println("=============CURRENT FLOOR PLAN=====================\n");
+		System.out.println("=============CURRENT FLOOR PLAN Directory=====================\n");
 		floorPlanDirectory.toString();
 		
 		//ASSIGN SECTIONS AND BREAKS
 		swing1.scheduleSections(team);
+		
+		System.out.println("==========Current Floor Plan ++++++++++++++++");
+		System.out.println(swing1.toString());
+		
 		swing1.staggerStartTimes(team);
 		swing1.balanceSections(team);
 		swing1.scheduleBreaks(team);
