@@ -3,6 +3,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -15,6 +17,16 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelWrite {
+	
+	
+	public void createDailyExcelSheet(ArrayList<Employee> team, Date date) {
+		
+	}
+	
+	
+	
+	
+	
 	
 	////////////////////////////////////////////////////////////////
 	//					outputExcel								  //	

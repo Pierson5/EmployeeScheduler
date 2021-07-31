@@ -221,7 +221,7 @@ public class Employee implements Serializable{
 	}
 
 	// updates employee rotation value after being assigned section/s
-	public void updateRotation() {
+	public void updateRotationPriorities() {
 		String sectionName = this.section.getName();
 		int sectionIndex = 0;
 		double sectionValue = 0.0;
@@ -255,15 +255,8 @@ public class Employee implements Serializable{
 	}
 
 	// Sorts an employee's rotation values in ascending order,
-	// used to assign sections based on highest values of that employee
-	public void sortRotation() {
-		/*
-		// anonymous class with Lambda expression
-		Comparator<Section> descRotationValue = (o1, o2) -> {
-			// ternary operator
-			return o1.getRotationValue() > o2.getRotationValue() ? 1 : -1;
-		};
-		*/
+	// Highest priority will be placed at the top (index 0)
+	public void sortRotationPriorities() {
 		Arrays.sort(rotationValues);
 	}
 

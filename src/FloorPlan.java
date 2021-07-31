@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Queue;
 
+import org.apache.poi.util.SystemOutLogger;
+
 public class FloorPlan {
 	private int numOfEmployees;
 	private String name;
@@ -237,13 +239,14 @@ public class FloorPlan {
 			if (counter == MAX_REPEAT_START_TIMES) {
 				for (int j = i + 1; j < sections.size(); j++) {
 					// start times differ and are on the same side of casino. (i.e. do not swap HL
-					// and 4 [same side])
+					// and 4 [different sides, each side already balanced as much as possible])
 
 					System.out.println("CHECKING SECTION " + sections.get(j).getName());
 					System.out.println("\nASSIGNED TO: " + sections.get(j).getAssignedEmployee().getFullName());
 
 					if (!sections.get(j).getAssignedEmployee().getStartTime().equals(startTime)
-							&& sections.get(j).isEast() == sections.get(i).isEast()) {
+							&& sections.get(j).isEast() == sections.get(i).isEast()
+							&& !sections.get(j).getAssignedEmployee().hasRelationship()) {
 						swapSections(sections.get(i).getAssignedEmployee(), sections.get(j).getAssignedEmployee());
 						counter = 0; // reset counter
 					} else
@@ -364,9 +367,14 @@ public class FloorPlan {
 			for (Section section : sections) {
 				if (section.getName().contains(empOneTopPriority.getName())) {
 					employee.setSection(section);
+					break;
 				}
+			}
+				
+			for (Section section : sections) {
 				if (section.getName().contains(empTwoTopPriority.getName())) {
-					relationshipEmployee.setSection(section);
+					employee.setSection(section);
+					break;
 				}
 			}
 		}
@@ -523,18 +531,21 @@ public class FloorPlan {
 				if (startTime1 == startTime2) {
 					emp1Section = employee1.getSection();
 					emp2Section = employee2.getSection();
+					
+					System.out.println("Comparing: " + employee1.getFirstName());
+					System.out.println("with: " + employee2.getFirstName());
 
 					// do not move employees with relationships
 					// Employee1 section priority for Employee2's section is higher (or equal to)
-					// than Employee2
+					// than Employee2 and higher than current priority. 
 					// Employee2 section priority for Employee1's section is higher (or equal to)
-					// than Employee1
+					// than Employee1 and higher than current priority. 
 					if (!(employee1.hasRelationship() || employee2.hasRelationship())
 							&& (employee1.sectionPriority(emp2Section) <= employee2.sectionPriority(emp2Section))
 							&& employee2.sectionPriority(emp1Section) <= employee1.sectionPriority(emp1Section)) {
 						System.out.println(
 								"Swapping***** " + employee1.getFullName() + " and " + employee2.getFullName());
-
+						
 						swapSections(employee1, employee2);
 					}
 				}

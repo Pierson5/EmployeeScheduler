@@ -35,6 +35,11 @@ public class main {
        
 		//Test cases, load employee files (16 employees + 2 Leads)
 		Employee a = Employee.loadFile(empFilePath, "Jeremy P");
+		
+		System.out.println("Employee " + a.getFirstName() + " loaded");
+		System.out.println(a.toString());
+		
+		
 		Employee b = Employee.loadFile(empFilePath, "Jamie Ale");
 		Employee c = Employee.loadFile(empFilePath, "Jeslee Cac");
 		Employee d = Employee.loadFile(empFilePath, "Ryan Cry");
@@ -158,14 +163,21 @@ public class main {
 		
 		//test toString and section assigning. 
 		for(Employee emp : team) {
-			emp.updateRotation();
-			emp.sortRotation();
+			
 			System.out.println(emp.toString());
 			System.out.println("\n");
 			
 			System.out.println(emp.getFirstName() + " assigned to section: " + emp.getSection().getName());
 			
+			
+			emp.updateRotationPriorities();
+			emp.sortRotationPriorities();
+			
+			System.out.println( emp.getFirstName() + " saved at: " + empFilePath);
 			emp.saveFile(empFilePath);
 		}
+		
+		//create excel file
+		
  	}
 }
