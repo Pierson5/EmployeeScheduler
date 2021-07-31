@@ -223,34 +223,27 @@ public class Employee implements Serializable{
 	// updates employee rotation value after being assigned section/s
 	public void updateRotationPriorities() {
 		String sectionName = this.section.getName();
-		int sectionIndex = 0;
 		double sectionValue = 0.0;
 
+		System.out.println("Calculating section: " + sectionName);
+		
 		// if working multiple sections, divide rotation value by number of
 		// sections worked.
 		// i.e. if working 9.HL, and rotation value is +1, rotation value will be 0.5
-		// for 9 and HL
-		if (sectionName.length() > 1 && !sectionName.equals("EAST") && !sectionName.equals("WEST")
+		// added for 9 and HL
+		if (!sectionName.equals("EAST") && !sectionName.equals("WEST")
 				&& !sectionName.equals("FLOAT")) {
 
-			// split string up at period delimiter
 			String[] sections = sectionName.split("\\.");
 
-			// iterate through tokens, calculate new priority value, add to old priority
-			// value
 			for (String i : sections) {
-				sectionIndex = Section.nameToRotationIndex(i);
 				sectionValue = 1.0 / sections.length;
-
-				this.rotationValues[sectionIndex].addToRotationValue(sectionValue);
+				for(int j = 0; j < rotationValues.length; j++) {
+					if(i.equals(rotationValues[j].getName())) {
+						this.rotationValues[j].addToRotationValue(sectionValue);
+					}
+				}
 			}
-		}
-
-		// section length string = 1, only one section to update, no calculations needed
-		else {
-			sectionIndex = Section.nameToRotationIndex(sectionName);
-
-			this.rotationValues[sectionIndex].addToRotationValue(1.0);
 		}
 	}
 

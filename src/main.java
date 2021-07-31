@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+
+import org.apache.poi.util.SystemOutLogger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -164,14 +167,23 @@ public class main {
 		//test toString and section assigning. 
 		for(Employee emp : team) {
 			
-			System.out.println(emp.toString());
-			System.out.println("\n");
-			
-			System.out.println(emp.getFirstName() + " assigned to section: " + emp.getSection().getName());
+			if(emp.getFirstName().equals("Jeremy")) {
+				System.out.println(emp.toString());
+				System.out.println("\n");
+				
+				System.out.println(emp.getFirstName() + " assigned to section: " + emp.getSection().getName());
+				
+			}
 			
 			
 			emp.updateRotationPriorities();
 			emp.sortRotationPriorities();
+			
+			if(emp.getFirstName().equals("Jeremy")) {
+				System.out.println("AFTER UPDATING\n");
+				System.out.println(emp.toString());
+				System.out.println("\n");
+			}
 			
 			System.out.println( emp.getFirstName() + " saved at: " + empFilePath);
 			emp.saveFile(empFilePath);
