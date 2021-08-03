@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 import org.apache.poi.util.SystemOutLogger;
 
-public class Employee implements Serializable{
+public class Employee implements Serializable {
 	private static final long serialVersionUID = 8958153751540631504L;
 	private int badgeNum;
 	private String firstName;
@@ -62,7 +62,7 @@ public class Employee implements Serializable{
 		this.hasRelationship = false;
 		this.setRelationship(relationshipWithThisEmployee);
 	}
-	
+
 	/*
 	 * Copy constructor
 	 */
@@ -171,18 +171,20 @@ public class Employee implements Serializable{
 	public void setThirdBreak(String thirdBreak) {
 		this.thirdBreak = thirdBreak;
 	}
-	
+
 	public void resetRotationValues() {
-		for(Section section : rotationValues) {
+		for (Section section : rotationValues) {
 			section.setRotationValue(0);
 		}
 	}
-	
-	//Resets assigned section and breaktimes
-	//used for re-serializing employee object
-	//so old data is not used in current scheduling
-	public void resetEmployeeValues() {
+
+	// Resets assigned section and breaktimes
+	// used for re-serializing employee object
+	// so old data is not used in current scheduling
+	public void clearAssignedSection() {
+		this.getSection().isAssigned = false;
 		this.isAssignedSection = false;
+	
 	}
 
 	public String rotationValuesToString() {
@@ -196,28 +198,52 @@ public class Employee implements Serializable{
 	}
 
 	public String toString() {
-		return "\nName: " + this.getFullName() + "\nAssigned Section = " + this.section.getName() + 
-				"\nStart Time: " + this.getStartTime() +
-				"\nBreaks: " + this.getFirstBreak() + "  "
-				+ this.getSecondBreak() + "  " + this.getThirdBreak() +
-				"\nRotation Values = " + Arrays.toString(this.getRotationValues());
-				
+		return "\nName: " + this.getFullName() + "\nAssigned Section = " + this.section.getName() + "\nStart Time: "
+				+ this.getStartTime() + "\nBreaks: " + this.getFirstBreak() + "  " + this.getSecondBreak() + "  "
+				+ this.getThirdBreak() + "\nRotation Values = " + Arrays.toString(this.getRotationValues());
 
 	}
 
 	// returns employee rotation index of parameter "section"
 	// Lower value = higher priority, with 0 being highest priority
+	// If multiple sections, calculates the average
 	// returns -1 if not found
 	public int sectionPriority(Section section) {
 		String sectionName = section.getName();
 		int sectionPriority = -1;
+		
+		//multiple sections, combine to find average priority
+		if(sectionName.contains(".")) {
+			sectionPriority = 0;
+			String[] sections = sectionName.split("\\.");
 
-		for (int i = 0; i < rotationValues.length; i++) {
-			if (sectionName.contains(rotationValues[i].getName())) {
-				sectionPriority = i;
+			for (String i : sections) {
+				for (int j = 0; j < rotationValues.length; j++) {
+					if (i.contains(rotationValues[j].getName())) {
+						sectionPriority += j;
+					}
+				}
+			}
+			
+			sectionPriority /= sections.length;
+			System.out.println("Calculating average of sectionName = " + sectionName);
+			System.out.println("Average is = " + sectionPriority);
+		}
+
+		else {
+			for (int i = 0; i < rotationValues.length; i++) {
+				if (sectionName.contains(rotationValues[i].getName())) {
+					sectionPriority = i;
+				}
 			}
 		}
+		
 		return sectionPriority;
+	}
+	
+	
+	public int priorityFromAssignedSection() {
+		return sectionPriority(this.getSection());
 	}
 
 	// updates employee rotation value after being assigned section/s
@@ -225,23 +251,17 @@ public class Employee implements Serializable{
 		String sectionName = this.section.getName();
 		double sectionValue = 0.0;
 
-		System.out.println("Calculating section: " + sectionName);
-		
 		// if working multiple sections, divide rotation value by number of
 		// sections worked.
 		// i.e. if working 9.HL, and rotation value is +1, rotation value will be 0.5
 		// added for 9 and HL
-		if (!sectionName.equals("EAST") && !sectionName.equals("WEST")
-				&& !sectionName.equals("FLOAT")) {
+		String[] sections = sectionName.split("\\.");
 
-			String[] sections = sectionName.split("\\.");
-
-			for (String i : sections) {
-				sectionValue = 1.0 / sections.length;
-				for(int j = 0; j < rotationValues.length; j++) {
-					if(i.equals(rotationValues[j].getName())) {
-						this.rotationValues[j].addToRotationValue(sectionValue);
-					}
+		for (String i : sections) {
+			sectionValue = 1.0 / sections.length;
+			for (int j = 0; j < rotationValues.length; j++) {
+				if (i.equals(rotationValues[j].getName())) {
+					this.rotationValues[j].addToRotationValue(sectionValue);
 				}
 			}
 		}
@@ -291,40 +311,35 @@ public class Employee implements Serializable{
 		String filename = fullName + ".ser";
 		String[] splitStr = fullName.split("\\s+");
 		filePath = filePath + File.separator + filename;
-		
-		try
-        {   
+
+		try {
 			File f = new File(filePath);
-			if(!f.exists()) {
+			if (!f.exists()) {
 				System.out.println("FILE NOT FOUND, CREATING FILE");
 				emp = new Employee(splitStr[0], splitStr[1]);
-			}
-			else {
+			} else {
 				// Reading employee object from file
-	            FileInputStream fileIn = new FileInputStream(filePath);
-	            ObjectInputStream in = new ObjectInputStream(fileIn);
-	              
-	            
-	            // deserialization of object
-	            emp = (Employee)in.readObject();
-	            in.close();
-	            fileIn.close();
+				FileInputStream fileIn = new FileInputStream(filePath);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+
+				// deserialization of object
+				emp = (Employee) in.readObject();
+				in.close();
+				fileIn.close();
 			}
-			
-            //reset old data
-            emp.resetEmployeeValues();
-        }
-          
-        catch(IOException e)
-        {
-        	e.printStackTrace();
-            System.out.println("IOException is caught during deserialization");
-        }
-          
-        catch(ClassNotFoundException e)
-        {
-            System.out.println("ClassNotFoundException is caught during deserialization");
-        }
+
+			// reset old data
+			emp.clearAssignedSection();
+		}
+
+		catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("IOException is caught during deserialization");
+		}
+
+		catch (ClassNotFoundException e) {
+			System.out.println("ClassNotFoundException is caught during deserialization");
+		}
 		return emp;
 	}
 }

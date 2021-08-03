@@ -73,6 +73,8 @@ public class FloorPlan {
 	// End of iteration, assign employee with highest priority to that section,
 	// update hashmap counter
 	public void scheduleSections(ArrayList<Employee> team) {
+		westMap.clear();
+		eastMap.clear();
 		String shiftTimeKey = "";
 
 		Collections.shuffle(team);
@@ -205,6 +207,72 @@ public class FloorPlan {
 		// assign any sections/employees that did not get assigned in main algorith,
 		// due to uneven number of east and west side sections
 		checkForUnassignedSections(team);
+	}
+
+	// simulated annealing variation to find best/good enough schedule
+	// assigns temp/scores to priority values, higher value = smaller temp/score
+	// reject schedules with a "high temp/score", recreating schedule and optimizing
+	// until optimal schedule (most employees with highest priorities scheduled) is
+	// found
+	public void createOptimalSchedule(ArrayList<Employee> team) {
+		double acceptableScore = 3.0;
+		double currentScore = 0.0;
+		double topScore = 10;
+		int time = 0;
+		ArrayList<Employee> currentOptimal = team;
+		boolean noSolutionFound = true;
+
+		while (noSolutionFound) {
+			// clear previously scheduled sections
+			for (Employee emp : team) {
+				emp.clearAssignedSection();
+			}
+
+			System.out.println("\n\n\nScheduling Team");
+			scheduleSections(team);
+			staggerStartTimes(team);
+			balanceSections(team);
+
+			currentScore = calculateAverageScore(team);
+
+			// save schedule with lowest score
+			if (currentScore < topScore) {
+				currentOptimal = team;
+				topScore = currentScore;
+			}
+			System.out.println("Current score = " + currentScore);
+
+			if (currentScore < acceptableScore) {
+				noSolutionFound = false;
+				team = currentOptimal;
+			}
+
+			time++;
+			if (time % 50 == 0) {
+				System.out.println("50 attempts without solution, increasing temp");
+				acceptableScore++;
+			}
+		}
+		System.out.println("OUT OF WHILE LOOP, current = " + currentScore + "  acceptable: " + acceptableScore);
+	}
+
+	// get
+	public double calculateAverageScore(ArrayList<Employee> team) {
+		double totalScore = 0.0;
+
+		for (Employee emp : team) {
+			if (emp.priorityFromAssignedSection() < 3) {
+				totalScore += 1;
+			} else if (emp.priorityFromAssignedSection() > 3 && emp.priorityFromAssignedSection() < 5) {
+				totalScore += 10;
+			} else if (emp.priorityFromAssignedSection() > 5 && emp.priorityFromAssignedSection() < 8) {
+				totalScore += 20;
+			} else {
+				totalScore += 40;
+			}
+		}
+		System.out.println("Calculating score, Total: " + totalScore + ", teamSize: " + team.size());
+		return totalScore / team.size();
 	}
 
 	public void checkForUnassignedSections(ArrayList<Employee> team) {
@@ -361,8 +429,13 @@ public class FloorPlan {
 		Section[] employeeRotation2 = relationshipEmployee.getRotationValues();
 		Section empOneTopPriority = employeeRotation1[0];
 		Section empTwoTopPriority = employeeRotation2[0];
-		// if top priorities are on different sides, schedule those sections
-		if (empOneTopPriority.isEast() && !empTwoTopPriority.isEast()) {
+
+		// Employee's top priorities on different sides of the casino
+		if ((empOneTopPriority.isEast() && !empTwoTopPriority.isEast())
+				|| (empTwoTopPriority.isEast() && !empOneTopPriority.isEast())
+						&& !empOneTopPriority.getName().equals(empTwoTopPriority.getName())) {
+
+			System.out.println("IN FIRST IF");
 			// match top priorities with available section
 			for (Section section : sections) {
 				if (section.getName().contains(empOneTopPriority.getName())) {
@@ -370,58 +443,68 @@ public class FloorPlan {
 					break;
 				}
 			}
-				
+
 			for (Section section : sections) {
 				if (section.getName().contains(empTwoTopPriority.getName())) {
-					employee.setSection(section);
+					relationshipEmployee.setSection(section);
 					break;
 				}
 			}
 		}
 
-		// both employees on same side, schedule highest priority on opposite side
+		// both employees top priorities on the same side, schedule top priority of one
+		// and assign top most priority of other on the opposite side
 		else {
-			if (empOneTopPriority.isEast()) {
+			System.out.println("IN SECOND IF");
+
+			// schedule empOne's top priority
+			for (Section section : sections) {
+				if (section.getName().contains(empOneTopPriority.getName())) {
+					employee.setSection(section);
+					System.out.println(employee.getFirstName() + " scheduled to " + section.getName());
+				}
+			}
+
+			// emp is scheduled east, find top priority west for emp2
+			// else, emp1 is scheduled west, find top priority east for emp2
+			if (employee.getSection().isEast()) {
+				System.out.println("SCHEDULING " + relationshipEmployee.getFirstName() + " To WEST");
+				// schedule empTwo top west side priority
 				for (Section rotationSection : employeeRotation2) {
-					if (!rotationSection.isEast()) {
+					if (!rotationSection.isEast() || rotationSection.getName().contains("FLOAT")) {
+						System.out.println("In west side IF statement checking " + rotationSection.getName());
 						// highest priority west side found, assign to emp2
 						for (Section section : sections) {
-							if (section.getName().contains(rotationSection.getName()) && !section.isAssigned()) {
+							if (section.isAssigned()) {
+								System.out.println(
+										"SECTION ALREADY ASSIGNED TO " + section.getAssignedEmployee().getFirstName());
+								break;
+							} else if (section.getName().contains(rotationSection.getName())) {
+								System.out.println("Scheduling " + relationshipEmployee.getFirstName() + " to "
+										+ section.getName());
 								relationshipEmployee.setSection(section);
-							}
-						}
-						break;
-					}
-					if (rotationSection.getName().contains(empOneTopPriority.getName())) {
-						for (Section section : sections) {
-							if (section.getName().contains(rotationSection.getName()) && !section.isAssigned()) {
-								employee.setSection(section);
 							}
 						}
 					}
 				}
 			} else {
+				// emp1 scheduled west, schedule emp2 to the east
 				for (Section rotationSection : employeeRotation2) {
-					if (rotationSection.isEast()) {
-						// highest priority west side found, assign to emp2
+					System.out.println("Scheduling east side:  " + rotationSection.isEast());
+					if (rotationSection.isEast() || rotationSection.getName().contains("FLOAT")) {
+						// highest priority east side found, assign to emp2
 						for (Section section : sections) {
-							if (section.getName().contains(rotationSection.getName())) {
+							System.out.println(
+									"Checking section: " + section.getName() + " is assigned? " + section.isAssigned());
+							if (section.getName().contains(rotationSection.getName()) && !section.isAssigned()) {
 								relationshipEmployee.setSection(section);
 							}
 						}
 						break;
 					}
-					if (rotationSection.getName().contains(empOneTopPriority.getName())) {
-						for (Section section : sections) {
-							if (section.getName().contains(rotationSection.getName()) && !section.isAssigned()) {
-								employee.setSection(section);
-							}
-						}
-					}
 				}
 			}
 		}
-
 		// display results of method TESTING
 		System.out.println(employee.getFirstName() + " rotation vals:   " + employee.rotationValuesToString());
 		System.out.println(relationshipEmployee.getFirstName() + " rotation vals:   "
@@ -531,21 +614,29 @@ public class FloorPlan {
 				if (startTime1 == startTime2) {
 					emp1Section = employee1.getSection();
 					emp2Section = employee2.getSection();
-					
+
 					System.out.println("Comparing: " + employee1.getFirstName());
 					System.out.println("with: " + employee2.getFirstName());
 
 					// do not move employees with relationships
 					// Employee1 section priority for Employee2's section is higher (or equal to)
-					// than Employee2 and higher than current priority. 
+					// than Employee2 and higher than current priority.
 					// Employee2 section priority for Employee1's section is higher (or equal to)
-					// than Employee1 and higher than current priority. 
+					// than Employee1 and higher than current priority.
 					if (!(employee1.hasRelationship() || employee2.hasRelationship())
 							&& (employee1.sectionPriority(emp2Section) <= employee2.sectionPriority(emp2Section))
 							&& employee2.sectionPriority(emp1Section) <= employee1.sectionPriority(emp1Section)) {
 						System.out.println(
-								"Swapping***** " + employee1.getFullName() + " and " + employee2.getFullName());
-						
+								"\n\nSwapping***** " + employee1.getFullName() + " and " + employee2.getFullName());
+						System.out.println(employee1.getFirstName() + " in section " + employee1.getSection().getName()
+								+ " has a priority of " + employee1.sectionPriority(emp1Section));
+						System.out.println(employee2.getFirstName() + " in section " + employee2.getSection().getName()
+								+ " has a priority of " + employee2.sectionPriority(emp2Section));
+						System.out.println(employee1.getFirstName() + " for section " + employee2.getSection().getName()
+								+ " has a priority of " + employee1.sectionPriority(emp2Section));
+						System.out.println(employee2.getFirstName() + " for section " + employee1.getSection().getName()
+								+ " has a priority of " + employee2.sectionPriority(emp1Section));
+
 						swapSections(employee1, employee2);
 					}
 				}
