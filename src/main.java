@@ -33,10 +33,6 @@ public class main {
 
 		// Test cases, load employee files (16 employees + 2 Leads)
 		Employee a = Employee.loadFile(empFilePath, "Jeremy P");
-
-		System.out.println("Employee " + a.getFirstName() + " loaded");
-		System.out.println(a.toString());
-
 		Employee b = Employee.loadFile(empFilePath, "Jamie Ale");
 		Employee c = Employee.loadFile(empFilePath, "Jeslee Cac");
 		Employee d = Employee.loadFile(empFilePath, "Ryan Cry");
@@ -61,9 +57,9 @@ public class main {
 		// assign TEST shift start times
 		String SIX = "6:00pm";
 		String SEVEN = "7:00pm";
-		//a.setStartTime(SEVEN);
-		//b.setStartTime(SEVEN);
-		//c.setStartTime(SIX);
+		a.setStartTime(SEVEN);
+		b.setStartTime(SEVEN);
+		c.setStartTime(SIX);
 		d.setStartTime(SEVEN);
 		e.setStartTime(SIX);
 		f.setStartTime(SEVEN);
@@ -106,17 +102,17 @@ public class main {
 		// West side
 		Section one = new Section("1");
 		Section two = new Section("2");
-		//Section twoThree = new Section("2.3");
+		Section twoThree = new Section("2.3");
 		Section three = new Section("3");
 		Section nine = new Section("9");
-		//Section nineHighLimit = new Section("9.HL");
+		Section nineHighLimit = new Section("9.HL");
 		Section highLimit1 = new Section("HL");
 		Section west = new Section("WEST");
 
 		// East side
 		Section four = new Section("4");
 		Section five = new Section("5");
-		//Section fiveSix = new Section("5.6");
+		Section fiveSix = new Section("5.6");
 		Section six = new Section("6");
 		Section seven = new Section("7");
 		Section eight = new Section("8");
@@ -129,16 +125,16 @@ public class main {
 		ArrayList<Section> forFifteenEmployees = new ArrayList<Section>();
 		forFifteenEmployees.add(one);
 		forFifteenEmployees.add(two);
-		//forFifteenEmployees.add(twoThree);
+		forFifteenEmployees.add(twoThree);
 		forFifteenEmployees.add(three);
 		forFifteenEmployees.add(nine);
-		//forFifteenEmployees.add(nineHighLimit);
+		forFifteenEmployees.add(nineHighLimit);
 		forFifteenEmployees.add(highLimit1);
 		forFifteenEmployees.add(west);
 
 		forFifteenEmployees.add(four);
 		forFifteenEmployees.add(five);
-		//forFifteenEmployees.add(fiveSix);
+		forFifteenEmployees.add(fiveSix);
 		forFifteenEmployees.add(six);
 		forFifteenEmployees.add(seven);
 		forFifteenEmployees.add(eight);

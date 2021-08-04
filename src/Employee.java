@@ -182,9 +182,9 @@ public class Employee implements Serializable {
 	// used for re-serializing employee object
 	// so old data is not used in current scheduling
 	public void clearAssignedSection() {
+		System.out.println(this.getFirstName() + " in " + this.getSection().getName() + " is cleared=======");
 		this.getSection().isAssigned = false;
 		this.isAssignedSection = false;
-	
 	}
 
 	public String rotationValuesToString() {
@@ -208,7 +208,7 @@ public class Employee implements Serializable {
 	// Lower value = higher priority, with 0 being highest priority
 	// If multiple sections, calculates the average
 	// returns -1 if not found
-	public int sectionPriority(Section section) {
+	public int getSectionPriority(Section section) {
 		String sectionName = section.getName();
 		int sectionPriority = -1;
 		
@@ -241,11 +241,6 @@ public class Employee implements Serializable {
 		return sectionPriority;
 	}
 	
-	
-	public int priorityFromAssignedSection() {
-		return sectionPriority(this.getSection());
-	}
-
 	// updates employee rotation value after being assigned section/s
 	public void updateRotationPriorities() {
 		String sectionName = this.section.getName();
@@ -304,6 +299,7 @@ public class Employee implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
 
 	// De-serializes employee file
 	public static Employee loadFile(String filePath, String fullName) {
