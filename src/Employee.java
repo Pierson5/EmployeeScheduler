@@ -322,6 +322,7 @@ public class Employee implements Serializable {
 				fileIn.close();
 			}
 
+			// reset old data
 			emp.clearAssignedSection();
 		}
 
