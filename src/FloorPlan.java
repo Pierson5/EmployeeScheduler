@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Queue;
 
-import org.apache.poi.util.SystemOutLogger;
-
 public class FloorPlan {
 	private int numOfEmployees;
 	private String name;

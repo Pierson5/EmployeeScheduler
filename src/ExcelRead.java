@@ -1,74 +1,134 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.poi.ss.formula.functions.Column;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.*;
 
 public class ExcelRead {
 
-	//constants
 	private static final String OFF = "OFF";
 	private static final String PTO = "PTO";
 	private static final String LOA = "LOA";
-	private static final String DUAL_RATE = "D";
-	private static final int DAYS_IN_WEEK = 7;
-	private static final int MAX_NUM_EMPLOYEES = 30;
-	private String ONE = "1";
+	private static final String LEAD = "LEAD";
 	private final String SWING = "Swing";
 	private final String DAY = "Day";
 	private final String GRAVE = "Grave";
-
-	//declared instance variables
-	String[][] names;
-	String[][] times;
-	String[][] sections;
-	String[][] mobile;
-	String[] allNames;
-	String[] namesAndBadge;
-	String[] allHours;
-	String[] sectionsFinal;
-	String[] shiftTimesFinal;
-	String date;
-	String filePath;
-	int[] employeesPerHour;
-	int rowCount;
-	int startingRow;
-	int inLeftMostColumn = 0;
-	boolean isEndOfRow;
-	boolean isNotOne = true;
-	Cell numCell;
+	private String filePath = "";
+	private ArrayList<Employee> team = new ArrayList<Employee>();
+	private File src; 
+	private FileInputStream fis; 
+	private XSSFWorkbook wb; 
+	private XSSFSheet sheet1; 
+	private DataFormatter formatter; 
 
 	//constructor, initialize variables
-	public ExcelRead(){
-		names = new String[DAYS_IN_WEEK][MAX_NUM_EMPLOYEES];
-		times = new String[DAYS_IN_WEEK][MAX_NUM_EMPLOYEES];
-		sections = new String[DAYS_IN_WEEK][];
-		mobile = new String[DAYS_IN_WEEK][];
-		allNames = new String[MAX_NUM_EMPLOYEES];
-		namesAndBadge = new String[MAX_NUM_EMPLOYEES];
-		allHours = new String[MAX_NUM_EMPLOYEES];
-		rowCount = 0;
-		isEndOfRow = false;
-		startingRow = 0;
-		date = "";
-		filePath = "";
+	public ExcelRead(String filePath) throws IOException {
+		this.filePath = filePath;
+		this.src = new File(filePath); 
+		this.fis = new FileInputStream(src); 
+		this.wb = new XSSFWorkbook(fis); 
+		this.sheet1 = wb.getSheetAt(0); 
+		this.formatter = new DataFormatter(); 
+	}
+	
+	public void setTeam(String shift, String weekday) throws IOException{
+		int shiftRow = getShiftRow(shift);
+		//String scheduleDate = parseDate(date); TODO
+		String scheduleDate = "7-Jun";  //hardcoded test case
+		Row dateRow = sheet1.getRow(shiftRow + 1);
+		int dateColumn = getDateColumn(scheduleDate, dateRow);
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	private ArrayList<Employee> readEmployees(Row dateRow, int dateColumn){
+		
+		
+		
+		
+		return team;
+	}
+	
+	//returns column number for specified date
+	//if not found, returns -1
+	private int getDateColumn(String date, Row dateRow) {
+		int dateColumn = -1;
+		
+		for(Cell cell : dateRow) {
+			if(cell.getStringCellValue().equals(date)) {
+				dateColumn = cell.getColumnIndex();
+			}
+		}
+		return dateColumn;
 	}
 
-	//getStartingRow
-	public int getStartingRow(){
-		return startingRow;
+	//returns row number of shift on excel sheet
+	//if not found, returns -1
+	private int getShiftRow(String shift) {
+		int rowNum = -1;
+		for(Row row : sheet1) {
+			for(Cell cell : row) {
+				if (formatter.formatCellValue(cell).contains(shift)){
+                    rowNum = row.getRowNum();
+                }
+			}
+		}
+		return rowNum;
 	}
-
-	//setStartingRow
-	public void setStartingRow(int rowNum){
-		startingRow = rowNum;
+	
+	
+	//converts date object into Day#-Month format for excel schedule
+	//TODO determine format Swing date widget sends date information
+	private String parseDate(Date date) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);  //monday/tuesday/wednesday
+		int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);
+		String month = new SimpleDateFormat("MMM").format(c.getTime());
+		
+		return dayOfMonth + "-" + month;
 	}
+	
+	private int getDateColumn(int shiftRow, String date) {
+		int columnNum = -1;
+		int dateRow = shiftRow + 1;
+		
+		for(Row row : sheet1) {
+			for(Cell cell : row) {
+				if (formatter.formatCellValue(cell).contains(date)){
+					columnNum = row.getRowNum();
+                }
+			}
+		}
+		return columnNum;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	////////////////////////////////////////////////////////////////
 	//					setAllEmployeeNames                		  //	

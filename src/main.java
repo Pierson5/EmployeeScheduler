@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.Date;
 import java.io.File;
+import java.time.LocalDate;
 
 public class main {
 
@@ -7,8 +9,6 @@ public class main {
 	private static String excelFilePath = "";
 
 	public static void main(String[] args) {
-		
-		for(int xz = 0; xz < 15; xz++) {
 		
 		// Create directories for employee files and excel files if
 		// not already created. Created in same directory program is run.
@@ -28,6 +28,26 @@ public class main {
 		}
 		empFilePath = employeeFolder.getAbsolutePath();
 		excelFilePath = excelFolder.getAbsolutePath();
+		
+		
+		
+		
+		
+		
+		//Set the date for the schedule
+		Date date = new Date();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 		System.out.println("Loading employee files from: " + empFilePath);
 
@@ -176,8 +196,6 @@ public class main {
 			//emp.resetRotationValues();
 			emp.saveFile(empFilePath);
 		}
-
-		}//endfor
 		// create excel file
 
 	}
