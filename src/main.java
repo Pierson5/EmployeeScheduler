@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class main {
@@ -27,17 +28,7 @@ public class main {
 			System.out.println("Directory created successfully in: " + excelFolder.getAbsolutePath());
 		}
 		empFilePath = employeeFolder.getAbsolutePath();
-		excelFilePath = excelFolder.getAbsolutePath();
-		
-		
-		
-		
-		
-		
-		//Set the date for the schedule
-		Date date = new Date();
-		
-		
+		excelFilePath = excelFolder.getAbsolutePath() + "\\inputExample.xlsx";
 		
 		
 		
@@ -195,6 +186,20 @@ public class main {
 			
 			//emp.resetRotationValues();
 			emp.saveFile(empFilePath);
+			
+			
+			
+			try {
+				System.out.println("CURRENT EXCEL PATH: " + excelFilePath);
+				ExcelRead read = new ExcelRead(excelFilePath);
+				
+				read.setTeam("Swing", "MON");
+				
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 		}
 		// create excel file
 

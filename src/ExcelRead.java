@@ -53,13 +53,18 @@ public class ExcelRead {
 		
 		
 		
+		//team = readEmployees(dateRow, dateColumn);
+		
+		
 		
 		
 		
 	}
 	
 	private ArrayList<Employee> readEmployees(Row dateRow, int dateColumn){
-		
+		for(Cell cell : dateRow) {
+			
+		}
 		
 		
 		
@@ -85,6 +90,7 @@ public class ExcelRead {
 		int rowNum = -1;
 		for(Row row : sheet1) {
 			for(Cell cell : row) {
+				System.out.println("Cell info: " + cell.getStringCellValue());
 				if (formatter.formatCellValue(cell).contains(shift)){
                     rowNum = row.getRowNum();
                 }

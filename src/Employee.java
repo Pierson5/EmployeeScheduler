@@ -8,8 +8,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.apache.poi.util.SystemOutLogger;
-
 public class Employee implements Serializable {
 	private static final long serialVersionUID = 8958153751540631504L;
 	private int badgeNum;
