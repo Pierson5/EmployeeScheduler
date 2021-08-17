@@ -320,7 +320,6 @@ public class Employee implements Serializable {
 				emp = (Employee) in.readObject();
 				in.close();
 				fileIn.close();
-				//test
 			}
 
 			// reset old data
