@@ -38,7 +38,6 @@ public class main {
 		
 		
 
-		System.out.println("Loading employee files from: " + empFilePath);
 
 		// Test cases, load employee files (16 employees + 2 Leads)
 		Employee a = Employee.loadFile(empFilePath, "Jeremy P");
@@ -173,10 +172,6 @@ public class main {
 		// test toString and section assigning.
 		for (Employee emp : team) {
 
-			System.out.println(emp.toString());
-			System.out.println("\n");
-
-			System.out.println(emp.getFirstName() + " assigned to section: " + emp.getSection().getName());
 
 			emp.updateRotationPriorities();
 			emp.sortRotationPriorities();
@@ -184,23 +179,22 @@ public class main {
 			
 			//emp.resetRotationValues();
 			emp.saveFile(empFilePath);
-			
-			
-			
-			try {
-				System.out.println("CURRENT EXCEL PATH: " + excelFilePath);
-				ExcelRead read = new ExcelRead(excelFilePath);
-				
-				read.setTeam("Swing", "MON");
-				
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
 		}
-		// create excel file
+		//test reading excel file
 
-	}
 		
+		
+		try {
+			ExcelRead read = new ExcelRead(excelFilePath);
+			
+			read.setTeam("Swing", "MON");
+			
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		// create excel file
+		
+	}
 }

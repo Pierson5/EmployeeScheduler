@@ -180,7 +180,6 @@ public class Employee implements Serializable {
 	// used for re-serializing employee object
 	// so old data is not used in current scheduling
 	public void clearAssignedSection() {
-		System.out.println(this.getFirstName() + " in " + this.getSection().getName() + " is cleared=======");
 		this.getSection().isAssigned = false;
 		this.isAssignedSection = false;
 	}
@@ -224,8 +223,6 @@ public class Employee implements Serializable {
 			}
 			
 			sectionPriority /= sections.length;
-			System.out.println("Calculating average of sectionName = " + sectionName);
-			System.out.println("Average is = " + sectionPriority);
 		}
 
 		else {

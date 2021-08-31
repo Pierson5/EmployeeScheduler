@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Queue;
 
+import org.apache.poi.util.SystemOutLogger;
+
 public class FloorPlan {
 	private int numOfEmployees;
 	private String name;
@@ -84,7 +86,7 @@ public class FloorPlan {
 		// method
 		for (Section section : sections) {
 			if (section.getName().equals("FLOAT")) {
-				System.out.println("ASSIGNING FLOAT SECTION");
+				//System.out.println("ASSIGNING FLOAT SECTION");
 				if (!section.isAssigned()) {
 					assignTopPriority(team, section);
 				}
@@ -104,7 +106,7 @@ public class FloorPlan {
 
 				// Schedule East Side
 				if (eastMap.get(shiftTimeKey) < westMap.get(shiftTimeKey)) {
-					System.out.println("Scheduling East side, < West");
+					//System.out.println("Scheduling East side, < West");
 
 					for (Section section : sections) {
 						Boolean hasUniqueStartTime = false;
@@ -112,7 +114,7 @@ public class FloorPlan {
 						// Check if Section is on the East side
 						if (section.isEast() && !section.isAssigned()) {
 
-							System.out.println("Scheduling " + section.getName());
+							//System.out.println("Scheduling " + section.getName());
 
 							// compare section to employees in team with the same start time as above.
 							// if there are no other employees with the same start time, schedule highest
@@ -125,10 +127,12 @@ public class FloorPlan {
 									// get employee with highest priority and assign that employee the section
 									employee = empWithHighestPriority(empToAssign, empToCompare, section);
 
+									/*
 									System.out.println("Comparing1: " + empToAssign.getFirstName() + " with: "
 											+ empToCompare.getFirstName());
 									System.out.println("Winner1: " + employee.getFirstName() + " is scheduled section: "
 											+ section.getName());
+									*/
 
 									employee.setSection(section);
 									updateFloorPlanTime(employee);
@@ -148,7 +152,7 @@ public class FloorPlan {
 
 				// Schedule West Side
 				else if (eastMap.get(shiftTimeKey) > westMap.get(shiftTimeKey)) {
-					System.out.println("Scheduling West side, < East");
+					//System.out.println("Scheduling West side, < East");
 
 					for (Section section : sections) {
 						Boolean isAssigned = false;
@@ -156,7 +160,7 @@ public class FloorPlan {
 						// Check if Section is on the East side
 						if (!section.isEast() && !section.isAssigned()) {
 
-							System.out.println("Scheduling " + section.getName());
+							//System.out.println("Scheduling " + section.getName());
 
 							// compare section to employees in team with the same start time as above.
 							// if there are no other employees with the same start time, schedule highest
@@ -168,11 +172,14 @@ public class FloorPlan {
 									Employee employee;
 									// get employee with highest priority and assign that employee the section
 									employee = empWithHighestPriority(empToAssign, empToCompare, section);
+									
+									/*
 									System.out.println("Comparing2: " + empToAssign.getFirstName() + " with: "
 											+ empToCompare.getFirstName());
 									System.out.println("Winner2: " + employee.getFirstName() + " is scheduled section: "
 											+ section.getName());
-
+									*/
+									
 									employee.setSection(section);
 									updateFloorPlanTime(employee);
 									isAssigned = true;
@@ -191,10 +198,10 @@ public class FloorPlan {
 				// both sides have equal number(or zero) employees with that shift time
 				// assign highest priority from available sections
 				else {
-					System.out.println("Both sides equal, assigning employee: " + empToAssign.getFirstName());
+					//System.out.println("Both sides equal, assigning employee: " + empToAssign.getFirstName());
 					for (Section section : sections) {
 						if (!section.isAssigned()) {
-							System.out.println("Assigning SECTION " + section.getName());
+							//System.out.println("Assigning SECTION " + section.getName());
 							empToAssign.setSection(section);
 							updateFloorPlanTime(empToAssign);
 							break;
@@ -216,11 +223,11 @@ public class FloorPlan {
 	public void createOptimalSchedule(ArrayList<Employee> team) {
 		double acceptableScore = 3.0;
 		double currentScore = 0.0;
-		double topScore = 10;
+		double topScore = 0.0;
 		int time = 0;
-		ArrayList<Employee> currentOptimal = team;
+		ArrayList<Employee> currentOptimalSchedule = team;
 		boolean noSolutionFound = true;
-
+		
 		while (noSolutionFound) {
 			// clear previously scheduled sections
 			for(Section section : sections) {
@@ -228,26 +235,26 @@ public class FloorPlan {
 			}
 			for (Employee emp : team) {
 				emp.clearAssignedSection();
-				System.out.println("********** " + emp.getFirstName() + " assigned to section = " + emp.getSection().getName());
 			}
 
-			System.out.println("\n\n\nScheduling Team");
 			scheduleSections(team);
 			staggerStartTimes(team);
 			balanceSections(team);
 
 			currentScore = calculateAverageScore(team);
-
-			// save schedule with lowest score
-			if (currentScore < topScore) {
-				currentOptimal = team;
+			
+			if(topScore == 0.0) {
 				topScore = currentScore;
 			}
-			System.out.println("Current score = " + currentScore);
+			// save schedule with lowest score
+			if (currentScore < topScore) {
+				currentOptimalSchedule = team;
+				topScore = currentScore;
+			}
 			
 			if (currentScore < acceptableScore) {
 				noSolutionFound = false;
-				team = currentOptimal;
+				team = currentOptimalSchedule;
 			}
 
 			time++;
@@ -255,7 +262,7 @@ public class FloorPlan {
 				acceptableScore++;
 			}
 		}
-		System.out.println("OUT OF WHILE LOOP, current = " + currentScore + "  acceptable: " + acceptableScore);
+		System.out.println("OUT OF WHILE LOOP, topScore = " + topScore + "  acceptable: " + acceptableScore);
 	}
 
 	// get
@@ -275,19 +282,19 @@ public class FloorPlan {
 				totalScore += 40;
 			}
 		}
-		System.out.println("Calculating score, Total: " + totalScore + ", teamSize: " + team.size());
+		//System.out.println("Calculating score, Total: " + totalScore + ", teamSize: " + team.size());
 		return totalScore / team.size();
 	}
 
 	public void checkForUnassignedSections(ArrayList<Employee> team) {
-		System.out.println("XXXXUNASSIGNEDXXX ");
+		//System.out.println("XXXXUNASSIGNEDXXX ");
 		for (Employee emp : team) {
 			if (!emp.isAssignedSection()) {
-				System.out.println("EMPLOYEE: " + emp.getFirstName());
+				//System.out.println("EMPLOYEE: " + emp.getFirstName());
 				for (Section section : sections) {
 					if (!section.isAssigned) {
 						emp.setSection(section);
-						System.out.println(emp.getFirstName() + " Assigned to UNSIGNED section " + section.getName());
+						//System.out.println(emp.getFirstName() + " Assigned to UNSIGNED section " + section.getName());
 						break;
 					}
 				}
@@ -317,8 +324,8 @@ public class FloorPlan {
 					// start times differ and are on the same side of casino. (i.e. do not swap HL
 					// and 4 [different sides, each side already balanced as much as possible])
 
-					System.out.println("\nCHECKING SECTION " + sections.get(j).getName());
-					System.out.println("ASSIGNED TO: " + sections.get(j).getAssignedEmployee().getFullName());
+					//System.out.println("\nCHECKING SECTION " + sections.get(j).getName());
+					//System.out.println("ASSIGNED TO: " + sections.get(j).getAssignedEmployee().getFullName());
 
 					if (!sections.get(j).getAssignedEmployee().getStartTime().equals(startTime)
 							&& sections.get(j).isEast() == sections.get(i).isEast()
@@ -411,11 +418,11 @@ public class FloorPlan {
 		// opposite ends of casino
 		for (Employee employee : team) {
 
-			System.out.println("Checking employee: " + employee.getFullName());
-			System.out.println("Employee hasRelationship? :  " + employee.hasRelationship());
+			//System.out.println("Checking employee: " + employee.getFullName());
+			//System.out.println("Employee hasRelationship? :  " + employee.hasRelationship());
 
 			if (employee.hasRelationship()) {
-				System.out.println(employee.getFullName() + "has relationship, assigining section:::::::::::::::");
+				//System.out.println(employee.getFullName() + "has relationship, assigining section:::::::::::::::");
 				// This will skip the relationed employee further down the ArrayList once
 				// already scheduled
 				if (employee.getFullName().equals(alreadyScheduled)) {
@@ -443,7 +450,7 @@ public class FloorPlan {
 				|| (empTwoTopPriority.isEast() && !empOneTopPriority.isEast())
 						&& !empOneTopPriority.getName().equals(empTwoTopPriority.getName())) {
 
-			System.out.println("IN FIRST IF");
+			//System.out.println("IN FIRST IF");
 			// match top priorities with available section
 			for (Section section : sections) {
 				if (section.getName().contains(empOneTopPriority.getName())) {
@@ -463,13 +470,13 @@ public class FloorPlan {
 		// both employees top priorities on the same side, schedule top priority of one
 		// and assign top most priority of other on the opposite side
 		else {
-			System.out.println("IN SECOND IF");
+			//System.out.println("IN SECOND IF");
 
 			// schedule empOne's top priority
 			for (Section section : sections) {
 				if (section.getName().contains(empOneTopPriority.getName())) {
 					employee.setSection(section);
-					System.out.println(employee.getFirstName() + " scheduled to " + section.getName());
+					//System.out.println(employee.getFirstName() + " scheduled to " + section.getName());
 					break;
 				}
 			}
@@ -477,20 +484,20 @@ public class FloorPlan {
 			// emp is scheduled east, find top priority west for emp2
 			// else, emp1 is scheduled west, find top priority east for emp2
 			if (employee.getSection().isEast()) {
-				System.out.println("SCHEDULING " + relationshipEmployee.getFirstName() + " To WEST");
+				//System.out.println("SCHEDULING " + relationshipEmployee.getFirstName() + " To WEST");
 				// schedule empTwo top west side priority
 				for (Section rotationSection : employeeRotation2) {
 					if (!rotationSection.isEast() || rotationSection.getName().contains("FLOAT")) {
-						System.out.println("In west side IF statement checking " + rotationSection.getName());
+						//System.out.println("In west side IF statement checking " + rotationSection.getName());
 						// highest priority west side found, assign to emp2
 						for (Section section : sections) {
 							if (section.isAssigned()) {
-								System.out.println(
-										"SECTION ALREADY ASSIGNED TO " + section.getAssignedEmployee().getFirstName());
+								//System.out.println(
+								//		"SECTION ALREADY ASSIGNED TO " + section.getAssignedEmployee().getFirstName());
 								break;
 							} else if (section.getName().contains(rotationSection.getName())) {
-								System.out.println("Scheduling " + relationshipEmployee.getFirstName() + " to "
-										+ section.getName());
+								//System.out.println("Scheduling " + relationshipEmployee.getFirstName() + " to "
+								//		+ section.getName());
 								relationshipEmployee.setSection(section);
 								break;
 							}
@@ -500,12 +507,12 @@ public class FloorPlan {
 			} else {
 				// emp1 scheduled west, schedule emp2 to the east
 				for (Section rotationSection : employeeRotation2) {
-					System.out.println("Scheduling east side:  " + rotationSection.isEast());
+					//System.out.println("Scheduling east side:  " + rotationSection.isEast());
 					if (rotationSection.isEast() || rotationSection.getName().contains("FLOAT")) {
 						// highest priority east side found, assign to emp2
 						for (Section section : sections) {
-							System.out.println(
-									"Checking section: " + section.getName() + " is assigned? " + section.isAssigned());
+							//System.out.println(
+							//		"Checking section: " + section.getName() + " is assigned? " + section.isAssigned());
 							if (section.getName().contains(rotationSection.getName()) && !section.isAssigned()) {
 								relationshipEmployee.setSection(section);
 								break;
@@ -517,6 +524,7 @@ public class FloorPlan {
 			}
 		}
 		// display results of method TESTING
+		/*
 		System.out.println(employee.getFirstName() + " rotation vals:   " + employee.rotationValuesToString());
 		System.out.println(relationshipEmployee.getFirstName() + " rotation vals:   "
 				+ relationshipEmployee.rotationValuesToString());
@@ -524,6 +532,7 @@ public class FloorPlan {
 		System.out.println(employee.getFullName() + " (1) assigned to section " + employee.getSection().toString());
 		System.out.println(relationshipEmployee.getFullName() + " (2) assigned to section "
 				+ relationshipEmployee.getSection().toString());
+		*/
 
 		// update start time counter for assigned sections
 		updateFloorPlanTime(employee);
@@ -533,17 +542,17 @@ public class FloorPlan {
 	// Updates # of employees scheduled to east or west side
 	// based on shift start times
 	private void updateFloorPlanTime(Employee employee) {
-		System.out.println("/n CURRENT MAPS");
-		System.out.println("\n\nEAST\n\n" + eastMap.toString());
-		System.out.println("WEST\n\n" + westMap.toString());
+		//System.out.println("/n CURRENT MAPS");
+		//System.out.println("\n\nEAST\n\n" + eastMap.toString());
+		//System.out.println("WEST\n\n" + westMap.toString());
 		Section sectionToUpdate = employee.getSection();
 		String sectionKey = employee.getStartTime();
 
-		System.out.println(employee.getFirstName() + " is adding " + employee.getStartTime() + " to section: "
-				+ employee.getSection());
+		//System.out.println(employee.getFirstName() + " is adding " + employee.getStartTime() + " to section: "
+		//		+ employee.getSection());
 
 		if (sectionToUpdate.isEast()) {
-			System.out.println("Incrementing east");
+			//System.out.println("Incrementing east");
 			// if map contain key (start time), increment counter
 			if (eastMap.containsKey(sectionKey)) {
 				eastMap.put(sectionKey, eastMap.get(sectionKey) + 1);
@@ -557,12 +566,12 @@ public class FloorPlan {
 		// else, its on west side (or float)
 		else {
 			if (sectionToUpdate.getName().equals("FLOAT")) {
-				System.out.println("Float, no incrementation");
+				//System.out.println("Float, no incrementation");
 				// do nothing, do not add to map
 			} else { // else, its on west side, update westMap
 						// if map contain key (start time), increment counter
 				if (westMap.containsKey(sectionKey)) {
-					System.out.println("Incrementing west side");
+					//System.out.println("Incrementing west side");
 					westMap.put(sectionKey, westMap.get(sectionKey) + 1);
 				}
 				// else, map codes not contain value, add new entry with count of 1
@@ -573,10 +582,10 @@ public class FloorPlan {
 		}
 
 		// display updated hashmaps
-		System.out.println("\nUPDATED MAPS");
-		System.out.println("\nEAST\n" + eastMap.toString());
-		System.out.println("\nWEST\n" + westMap.toString());
-		System.out.println(this.toString());
+		//System.out.println("\nUPDATED MAPS");
+		//System.out.println("\nEAST\n" + eastMap.toString());
+		//System.out.println("\nWEST\n" + westMap.toString());
+		//System.out.println(this.toString());
 
 	}
 
@@ -604,8 +613,8 @@ public class FloorPlan {
 				}
 			}
 		}
-		System.out.println(
-				"assignTopPriority::: " + currentTopPriority.getFirstName() + " Section: " + toAssign.getName());
+		//System.out.println(
+		//		"assignTopPriority::: " + currentTopPriority.getFirstName() + " Section: " + toAssign.getName());
 		currentTopPriority.setSection(toAssign);
 		toAssign.isAssigned = true;
 	}
@@ -625,9 +634,10 @@ public class FloorPlan {
 				if (startTime1 == startTime2) {
 					emp1Section = employee1.getSection();
 					emp2Section = employee2.getSection();
-
-					System.out.println("Comparing: " + employee1.getFirstName());
-					System.out.println("with: " + employee2.getFirstName());
+					
+					
+					//System.out.println("Comparing: " + employee1.getFirstName());
+					//System.out.println("with: " + employee2.getFirstName());
 
 					// do not move employees with relationships
 					// Employee1 section priority for Employee2's section is higher (or equal to)
@@ -637,6 +647,7 @@ public class FloorPlan {
 					if (!(employee1.hasRelationship() || employee2.hasRelationship())
 							&& (employee1.getSectionPriority(emp2Section) <= employee2.getSectionPriority(emp2Section))
 							&& employee2.getSectionPriority(emp1Section) <= employee1.getSectionPriority(emp1Section)) {
+						/*
 						System.out.println(
 								"\n\nSwapping***** " + employee1.getFullName() + " and " + employee2.getFullName());
 						System.out.println(employee1.getFirstName() + " in section " + employee1.getSection().getName()
@@ -647,7 +658,7 @@ public class FloorPlan {
 								+ " has a priority of " + employee1.getSectionPriority(emp2Section));
 						System.out.println(employee2.getFirstName() + " for section " + employee1.getSection().getName()
 								+ " has a priority of " + employee2.getSectionPriority(emp1Section));
-
+						*/
 						swapSections(employee1, employee2);
 					}
 				}
@@ -658,9 +669,9 @@ public class FloorPlan {
 	private void swapSections(Employee emp1, Employee emp2) {
 		Section temp = emp1.getSection();
 		emp1.setSection(emp2.getSection());
-		System.out.println(emp1.getFirstName() + " is now section " + emp2.getSection().getName());
+		//System.out.println(emp1.getFirstName() + " is now section " + emp2.getSection().getName());
 		emp2.setSection(temp);
-		System.out.println(emp2.getFirstName() + " is now section " + temp.getName());
+		//System.out.println(emp2.getFirstName() + " is now section " + temp.getName());
 
 	}
 }
